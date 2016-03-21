@@ -1,0 +1,12 @@
+quit    QUIT
+quit    ESCAPE
+
+left    LEFT
+right   RIGHT
+up      UP
+down    DOWN
+
+left    A
+right   D
+up      W
+down    S
