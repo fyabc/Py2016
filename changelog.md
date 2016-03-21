@@ -14,3 +14,5 @@ Author: **fyabc**
 
 Create this project.<br/>
 Add  `main.py` , the main program.
+
+Add something from another pygame project on Linux

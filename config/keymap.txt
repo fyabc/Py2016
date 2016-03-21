@@ -1,12 +1,12 @@
-quit    QUIT
-quit    ESCAPE
-
+esc     ESCAPE
 left    LEFT
 right   RIGHT
 up      UP
 down    DOWN
 
-left    A
-right   D
-up      W
-down    S
+# lower cases
+esc     q
+left    a
+right   d
+up      w
+down    s
