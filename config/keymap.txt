@@ -1,12 +1,14 @@
 esc     ESCAPE
 left    LEFT
 right   RIGHT
-up      UP
-down    DOWN
+shift   LSHIFT
+shift   RSHIFT
+jump    SPACE
+jump    UP
 
 # lower cases
 esc     q
-left    a
-right   d
-up      w
-down    s
+# left    a
+# right   d
+# jump    w
+help    h

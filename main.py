@@ -44,10 +44,11 @@ def main():
     while running:
         # Step1 : handle events.
         for event in pygame.event.get():
-            # print event # FIXME
+            # print(event) # FIXME
             if event.type == pygame.locals.QUIT:
                 running = False
             elif event.type == pygame.locals.KEYDOWN:
+                # print(event.key) # FIXME
                 if event.key in keyMap['esc']:
                     running = False
 
