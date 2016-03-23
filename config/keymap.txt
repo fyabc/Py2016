@@ -1,14 +1,18 @@
-esc     ESCAPE
-left    LEFT
-right   RIGHT
-shift   LSHIFT
-shift   RSHIFT
-jump    SPACE
-jump    UP
+esc         ESCAPE
+left        LEFT
+right       RIGHT
+shift       LSHIFT
+shift       RSHIFT
+jump        SPACE
+jump        UP
 
 # lower cases
-esc     q
-# left    a
-# right   d
-# jump    w
-help    h
+esc         q
+newGame     n
+continue    c
+pause       p
+
+# left      a
+# right     d
+# jump      w
+help        h
