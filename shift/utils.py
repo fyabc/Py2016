@@ -4,6 +4,9 @@ __author__ = 'fyabc'
 # Dependent libraries.
 import pygame.locals
 
+# Local libraries.
+from config.gameConfig import RECORD_FILE_NAME
+
 def loadKeyMap():
     keyMap = {}
 
@@ -23,3 +26,28 @@ def loadKeyMap():
     keyMapFile.close()
 
     return keyMap
+
+def loadLevels(levelsFolderName = 'data/levels/basic'):
+    pass
+
+def loadRecord():
+    try:
+        record = open(RECORD_FILE_NAME, 'r')
+        result = int(record.read())
+        record.close()
+        return result
+    except FileNotFoundError:
+        return 1
+    except ValueError:
+        return 1
+
+def saveRecord(unlockedLevelNum):
+    record = open(RECORD_FILE_NAME, 'w')
+    record.write('%d\n' % unlockedLevelNum)
+    record.close()
+
+def invertColor(color):
+    if len(color) == 4:
+        return 255 - color[0], 255 - color[1], 255 - color[2], color[3]
+    else:
+        return 255 - color[0], 255 - color[1], 255 - color[2]

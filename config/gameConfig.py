@@ -22,3 +22,5 @@ CELL_SIZE = 50  # The size of a cell.
 assert GAME_SCREEN_SIZE[0] % CELL_SIZE == 0 and GAME_SCREEN_SIZE[1] % CELL_SIZE == 0
 
 BACKGROUND_COLOR = allColors['white']
+
+RECORD_FILE_NAME = 'data/record.txt'
