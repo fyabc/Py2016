@@ -13,7 +13,7 @@ class GameText:
     """
     def __init__(self, text = '', location = (0.5, 0.5), fontSize = 40,
                  fgColor = allColors['black'], bgColor = None,
-                 fontName = 'freesansbold.ttf'):
+                 fontName = '/usr/share/fonts/truetype/Consolas/consolab.ttf'):
         """
         :param text:
         :param location: The location of the center of the text. Note that it's relative position.
@@ -34,7 +34,7 @@ class GameText:
             self.bgColor = bgColor
         self.fontName = fontName
 
-    def writeToSurface(self, surface):
+    def draw(self, surface):
         font = pygame.font.Font(self.fontName, self.fontSize)
         text = font.render(self.text, True, self.fgColor, self.bgColor)
         rect = text.get_rect()

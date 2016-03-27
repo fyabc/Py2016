@@ -1,4 +1,4 @@
-esc         ESCAPE
+quit        ESCAPE
 left        LEFT
 right       RIGHT
 shift       LSHIFT
@@ -7,9 +7,10 @@ jump        SPACE
 jump        UP
 
 # lower cases
-esc         q
+quit        q
 newGame     n
 continue    c
+about       a
 pause       p
 
 # left      a

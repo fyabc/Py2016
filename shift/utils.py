@@ -2,10 +2,11 @@
 __author__ = 'fyabc'
 
 # Dependent libraries.
+import pygame.font
 import pygame.locals
 
 # Local libraries.
-from config.gameConfig import RECORD_FILE_NAME
+from config.gameConfig import RECORD_FILE_NAME, FONT_NAME
 
 def loadKeyMap():
     keyMap = {}
@@ -51,3 +52,12 @@ def invertColor(color):
         return 255 - color[0], 255 - color[1], 255 - color[2], color[3]
     else:
         return 255 - color[0], 255 - color[1], 255 - color[2]
+
+def getFont(fontSize = 40, fontName = FONT_NAME):
+    return pygame.font.Font(fontName, fontSize)
+
+def getKeyName(key, keyMap):
+    for keyName in keyMap:
+        if key in keyMap[keyName]:
+            return keyName
+    return None

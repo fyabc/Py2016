@@ -20,3 +20,8 @@ Add something from another pygame project on Linux
 ### 2016-03-23
 
 Change the game from **SuperMario** to **Shift**.
+Create some help classes and build the basic structure of the game.
+
+### 2016-03-25
+
+Create some help functions in `main.py`.
