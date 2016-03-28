@@ -81,67 +81,6 @@ def initGame():
 
     GVar.unlockedLevelNum = loadRecord()
 
-# def showStartGameScreen():
-#     mainWindow.fill(BACKGROUND_COLOR)
-#
-#     allText = [
-#         GameText('Sh', (0.43, 0.2), 60),
-#         GameText('ift', (0.57, 0.2), 60, allColors['white']),
-#         GameText('New Game(N)', (0.3, 0.5), 40),
-#         GameText('Help(H)', (0.3, 0.7), 40),
-#         GameText('Quit(Q)', (0.8, 0.5), 40),
-#         GameText('About(A)', (0.8, 0.7), 40),
-#         GameText('Author: fyabc<www.github.com/fyabc>', (0.5, 0.9), 18),
-#     ]
-#
-#     for text in allText:
-#         text.writeToSurface(mainWindow)
-#
-#     pygame.display.update()
-#
-#     while True:
-#         for event in pygame.event.get():
-#             if event.type == pygame.locals.QUIT:
-#                 return GVars.allStates['esc']
-#             elif event.type == pygame.locals.KEYDOWN:
-#                 if event.key in keyMap['esc']:
-#                     return GVars.allStates['esc']
-#                 elif event.key in keyMap['help']:
-#                     return GVars.allStates['helpScreen']
-#
-# def showMainMenuScreen():
-#     return GVars.allStates['default']
-#
-# def showHelpScreen():
-#     mainWindow.fill(BACKGROUND_COLOR)
-#
-#     allText = [
-#         GameText('Help', (0.5, 0.3), fontSize=60),
-#         GameText('Left : run left    Right : run right', (0.5, 0.45), 18),
-#         GameText('Space : jump    Shift : shift to another world', (0.55, 0.6), 18),
-#         GameText('Tap Q to return', (0.5, 0.76), 22),
-#     ]
-#
-#     for text in allText:
-#         text.writeToSurface(mainWindow)
-#
-#     pygame.display.update()
-#
-#     while True:
-#         for event in pygame.event.get():
-#             if event.type == pygame.locals.QUIT:
-#                 return GVars.allStates['esc']
-#             elif event.type == pygame.locals.KEYDOWN:
-#                 if event.key in keyMap['esc']:
-#                     return GVars.allStates['startGameScreen']
-#
-# def mainGame():
-#     while True:
-#         return GVars.allStates['default']
-#
-# def showGameOverScreen():
-#     return GVars.allStates['esc']
-
 def quitGame():
     saveRecord(GVar.unlockedLevelNum)
     pygame.quit()

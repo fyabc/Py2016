@@ -13,7 +13,7 @@ class GameText:
     """
     def __init__(self, text = '', location = (0.5, 0.5), fontSize = 40,
                  fgColor = allColors['black'], bgColor = None,
-                 fontName = '/usr/share/fonts/truetype/Consolas/consolab.ttf'):
+                 fontName = FONT_NAME):
         """
         :param text:
         :param location: The location of the center of the text. Note that it's relative position.

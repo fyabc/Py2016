@@ -6,7 +6,7 @@ import pygame.font
 import pygame.locals
 
 # Local libraries.
-from config.gameConfig import RECORD_FILE_NAME, FONT_NAME
+from config.gameConfig import RECORD_FILE_NAME, FONT_NAME, LEVELS_DIR
 
 def loadKeyMap():
     keyMap = {}
@@ -28,7 +28,7 @@ def loadKeyMap():
 
     return keyMap
 
-def loadLevels(levelsFolderName = 'data/levels/basic'):
+def loadLevels(levelsFolderName = LEVELS_DIR):
     pass
 
 def loadRecord():

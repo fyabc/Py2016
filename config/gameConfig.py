@@ -23,6 +23,13 @@ assert GAME_SCREEN_SIZE[0] % CELL_SIZE == 0 and GAME_SCREEN_SIZE[1] % CELL_SIZE 
 
 BACKGROUND_COLOR = allColors['white']
 
+LEVELS_DIR = 'data/levels'
+
 RECORD_FILE_NAME = 'data/record.txt'
 
-FONT_NAME = '/usr/share/fonts/truetype/Consolas/consolab.ttf'
+from sys import platform
+
+if platform == 'win32':
+    FONT_NAME = 'C:/Windows/Fonts/consolab.ttf'
+else:
+    FONT_NAME = '/usr/share/fonts/truetype/Consolas/consolab.ttf'
