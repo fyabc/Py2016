@@ -27,9 +27,14 @@ LEVELS_DIR = 'data/levels'
 
 RECORD_FILE_NAME = 'data/record.txt'
 
-from sys import platform
+USE_SYSTEM_FONT = False
 
-if platform == 'win32':
-    FONT_NAME = 'C:/Windows/Fonts/consolab.ttf'
+if USE_SYSTEM_FONT:
+    from sys import platform
+
+    if platform == 'win32':
+        FONT_NAME = 'C:/Windows/Fonts/consolab.ttf'
+    else:
+        FONT_NAME = '/usr/share/fonts/truetype/Consolas/consolab.ttf'
 else:
-    FONT_NAME = '/usr/share/fonts/truetype/Consolas/consolab.ttf'
+    FONT_NAME = 'data/consolas-yahei.ttf'
