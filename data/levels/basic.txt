@@ -1,0 +1,18 @@
+# This file must end with a new line!
+# The index starts with 0 .
+
+1
+
+begin
+
+4
+
+0 0 1 1
+1 0 1 1
+1 0 0 1
+1 1 1 1
+
+S 0 0
+D 0 3
+
+end

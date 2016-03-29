@@ -11,4 +11,9 @@ mainWindow = None
 globalTimer = None
 globalFont = None
 keyMap = None
+
+totalLevelNum = None
 unlockedLevelNum = None
+currentLevelNum = None
+
+levelMap = None

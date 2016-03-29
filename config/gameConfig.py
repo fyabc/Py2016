@@ -36,5 +36,8 @@ if USE_SYSTEM_FONT:
         FONT_NAME = 'C:/Windows/Fonts/consolab.ttf'
     else:
         FONT_NAME = '/usr/share/fonts/truetype/Consolas/consolab.ttf'
+
+    # # set this to get system default font.
+    # FONT_NAME = None
 else:
     FONT_NAME = 'data/consolas-yahei.ttf'

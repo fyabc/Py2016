@@ -7,6 +7,11 @@ import pygame.locals
 
 # Local libraries.
 from config.gameConfig import RECORD_FILE_NAME, FONT_NAME, LEVELS_DIR
+from shift.gameLogic.gameMap import GameMap
+
+def lineStripComment(line, commentStr = '#'):
+    loc = line.find(commentStr)
+    return line[:None if loc == -1 else loc].strip()
 
 def loadKeyMap():
     keyMap = {}
@@ -28,8 +33,36 @@ def loadKeyMap():
 
     return keyMap
 
-def loadLevels(levelsFolderName = LEVELS_DIR):
-    pass
+def loadLevels(levelsFolderName = LEVELS_DIR, levelsFileName = 'basic.txt'):
+    levelsFile = open(levelsFolderName + '/' + levelsFileName, 'r')
+
+    levelsLines = levelsFile.read().split('\n')
+
+    levelsFile.close()
+
+    levelsLines = [
+        lineStripComment(line)
+        for line in levelsLines if len(lineStripComment(line)) > 0
+    ]
+
+    levelNum = int(levelsLines[0])
+    levelMap = [None] * levelNum
+
+    index = 1
+
+    for currentLevel in range(levelNum):
+        index += 1  # parse 'begin'
+        rawNum = int(levelsLines[index]); index += 1
+
+        levelMap[currentLevel] = [None] * rawNum
+        for i in range(rawNum):
+            levelMap[currentLevel][i] = [int(ch) for ch in levelsLines[index].split()]
+            index += 1
+
+        while levelsLines[index] != 'end':
+            command = levelsLines[index].split(); index += 1
+
+    return levelNum, levelMap
 
 def loadRecord():
     try:

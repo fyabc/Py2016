@@ -54,8 +54,7 @@ class Game:
             elif self.state == Game.allStates['default']:
                 break
 
-            self.prevState = self.state
-            self.state = self.screens[self.state].run(self.prevState)
+            self.prevState, self.state = self.state, self.screens[self.state].run(self.prevState)
 
         quitGame()
 
@@ -78,6 +77,8 @@ def initGame():
     GVar.globalFont = getFont()
 
     GVar.keyMap = loadKeyMap()
+
+    GVar.totalLevelNum, GVar.levelMap = loadLevels()
 
     GVar.unlockedLevelNum = loadRecord()
 
