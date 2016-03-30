@@ -11,7 +11,8 @@ import pygame.locals
 
 # Local modules.
 from config.gameConfig import *
-from shift.utils import *
+from shift.utils.loadLevels import loadLevels
+from shift.utils.basicUtils import *
 from shift.screen import *
 import GVar
 
@@ -35,7 +36,7 @@ class Game:
         'helpScreen': 3,
         'mainGame': 4,
         'aboutScreen' : 5,
-        'pauseMenu' : 6,
+        'pauseMenuScreen' : 6,
     }
 
     def __init__(self):
@@ -64,6 +65,7 @@ def main():
     game.registerScreen('startGameScreen', StartGameScreen(game))
     game.registerScreen('helpScreen', HelpScreen(game))
     game.registerScreen('mainMenuScreen', MainMenuScreen(game))
+    game.registerScreen('mainGame', MainGameScreen(game))
 
     game.run()
 

@@ -6,7 +6,7 @@ import pygame
 
 # Local modules
 from config.gameConfig import *
-from shift.utils import invertColor
+from shift.utils.basicUtils import invertColor
 
 class GameText:
     """A help class for text string of game.

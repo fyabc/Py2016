@@ -6,7 +6,7 @@ import pygame
 
 # Local modules.
 from config.gameConfig import allColors, GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT
-from shift.utils import getFont, invertColor
+from shift.utils.basicUtils import getFont, invertColor
 
 class ShiftTextButton(pygame.sprite.Sprite):
     """the button in my Shift game with a text

@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 __author__ = 'fyabc'
 
+# Standard libraries.
+import copy
+
 # Dependent libraries.
 import pygame
 import pygame.locals
@@ -8,9 +11,10 @@ import pygame.locals
 # Local modules.
 from config.gameConfig import FPS_MAIN, BACKGROUND_COLOR, allColors
 import GVar
+
 from shift.gameObjects.shiftButton import ShiftTextButton, ShiftButtonPool
 from shift.gameObjects.gameText import GameText
-from shift.utils import getKeyName, getFont
+from shift.utils.basicUtils import getKeyName, getFont
 
 class Screen:
     """base class for shift game screens.
@@ -111,7 +115,6 @@ class MenuScreen(Screen):
 
         return self.game.allStates['default']
 
-
 class StartGameScreen(MenuScreen):
     def __init__(self, game):
         super(StartGameScreen, self).__init__(game, GVar.mainWindow)
@@ -135,17 +138,16 @@ class StartGameScreen(MenuScreen):
         self.actions['help'] = lambda *args : self.game.allStates['helpScreen']
         self.actions['quit'] = lambda *args : self.game.allStates['esc']
 
-        newGameButton = ShiftTextButton('New Game(N)', (0.3, 0.4))
-        continueButton = ShiftTextButton('Continue(C)', (0.8, 0.4))
-        helpButton = ShiftTextButton('Help(H)', (0.3, 0.65))
-        quitButton = ShiftTextButton('Quit(Q)', (0.8, 0.65))
+        newGameButton = ShiftTextButton('New Game(N)', (0.25, 0.4))
+        continueButton = ShiftTextButton('Continue(C)', (0.75, 0.4))
+        helpButton = ShiftTextButton('Help(H)', (0.25, 0.65))
+        quitButton = ShiftTextButton('Quit(Q)', (0.75, 0.65))
 
         # add buttons to group
         self.addButtonAndAction(newGameButton, self.actions['newGame'])
         self.addButtonAndAction(continueButton, self.actions['continue'])
         self.addButtonAndAction(helpButton, self.actions['help'])
         self.addButtonAndAction(quitButton, self.actions['quit'])
-
 
 class HelpScreen(MenuScreen):
     def __init__(self, game):
@@ -201,7 +203,7 @@ class MainMenuScreen(MenuScreen):
         def __levelButtonsAction(levelNum):
             def __action(*args):
                 GVar.currentLevelNum = levelNum
-                return self.game.allStates['mainMenuScreen']
+                return self.game.allStates['mainGame']
             return __action
 
         for i in range(GVar.unlockedLevelNum):
@@ -210,3 +212,38 @@ class MainMenuScreen(MenuScreen):
         self.addButtonAndAction(self.returnButton, self.actions['quit'])
 
         return super(MainMenuScreen, self).run(*args)
+
+class MainGameScreen(MenuScreen):
+    def __init__(self, game):
+        super(MainGameScreen, self).__init__(game, GVar.mainWindow)
+
+        self.actions['quit'] = lambda *args : self.game.allStates['mainMenuScreen']
+        self.actions['pause'] = lambda *args : self.game.allStates['pauseMenuScreen']
+
+    def run(self, *args):
+        self.surface.fill(allColors['white'])
+
+        gameMap = copy.deepcopy(GVar.levelMap[GVar.currentLevelNum - 1])
+        # gameMap.draw(self.surface)
+
+        pygame.display.update()
+
+        while True:
+            GVar.globalTimer.tick(FPS_MAIN)
+            for event in pygame.event.get():
+                if event.type == pygame.locals.QUIT:
+                    return self.actions['esc'](*args)
+
+                elif event.type == pygame.locals.KEYDOWN:
+                    keyName = getKeyName(event.key, GVar.keyMap)
+                    if keyName in self.actions:
+                        # parse common key actions.
+                        return self.actions[keyName](*args)
+                    else:
+                        # parse game key actions.
+                        pass
+
+                elif event.type == pygame.locals.KEYUP:
+                    pass
+
+        return self.game.allStates['default']
