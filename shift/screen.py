@@ -2,7 +2,6 @@
 __author__ = 'fyabc'
 
 # Standard libraries.
-import copy
 
 # Dependent libraries.
 import pygame
@@ -12,6 +11,7 @@ import pygame.locals
 from config.gameConfig import FPS_MAIN, BACKGROUND_COLOR, allColors
 import GVar
 
+from shift.gameObjects.gameMap import GameMap
 from shift.gameObjects.shiftButton import ShiftTextButton, ShiftButtonPool
 from shift.gameObjects.gameText import GameText
 from shift.utils.basicUtils import getKeyName, getFont
@@ -75,15 +75,14 @@ class MenuScreen(Screen):
         for button in self.buttons.sprites():
             button.update(0)
         self.buttons.draw(self.surface)
-        pygame.display.update()
 
     def draw(self):
         self.buttons.clear(self.surface, lambda surf, rect: surf.fill(BACKGROUND_COLOR, rect))
         self.buttons.draw(self.surface)
-        pygame.display.update()
 
     def run(self, *args):
         self.initDraw()
+        pygame.display.update()
 
         while True:
             GVar.globalTimer.tick(FPS_MAIN)
@@ -102,12 +101,14 @@ class MenuScreen(Screen):
                         if button is not None:
                             button.update(1)
                             self.draw()
+                            pygame.display.update()
 
                 elif event.type == pygame.locals.MOUSEBUTTONUP:
                     if event.button == 1:
                         for button in self.buttons.sprites():
                             button.update(0)
                         self.draw()
+                        pygame.display.update()
 
                         button = self.buttons.getButtonClicked(event.pos)
                         if button is not None:
@@ -218,18 +219,21 @@ class MainGameScreen(MenuScreen):
         super(MainGameScreen, self).__init__(game, GVar.mainWindow)
 
         self.actions['quit'] = lambda *args : self.game.allStates['mainMenuScreen']
-        self.actions['pause'] = lambda *args : self.game.allStates['pauseMenuScreen']
+        self.actions['nextGame'] = lambda *args : self.game.allStates['mainGame']
+        # self.actions['pause'] = lambda *args : self.game.allStates['pauseMenuScreen']
 
     def run(self, *args):
         self.surface.fill(allColors['white'])
 
-        gameMap = copy.deepcopy(GVar.levelMap[GVar.currentLevelNum - 1])
-        # gameMap.draw(self.surface)
+        gameMap = GameMap(GVar.levelsData[GVar.currentLevelNum - 1], self.surface)
 
+        gameMap.draw(gameMap.surface)
         pygame.display.update()
 
         while True:
             GVar.globalTimer.tick(FPS_MAIN)
+            command = GameMap.allCommands['noOp']
+
             for event in pygame.event.get():
                 if event.type == pygame.locals.QUIT:
                     return self.actions['esc'](*args)
@@ -241,9 +245,46 @@ class MainGameScreen(MenuScreen):
                         return self.actions[keyName](*args)
                     else:
                         # parse game key actions.
-                        pass
+                        if keyName == 'left':
+                            command = GameMap.allCommands['left']
+                        elif keyName == 'right':
+                            command = GameMap.allCommands['right']
+                        elif keyName == 'jump':
+                            command = GameMap.allCommands['jump']
+                        elif keyName == 'shift':
+                            command = GameMap.allCommands['shift']
 
                 elif event.type == pygame.locals.KEYUP:
-                    pass
+                    keyName = getKeyName(event.key, GVar.keyMap)
+                    if keyName == 'left':
+                        command = GameMap.allCommands['leftStop']
+                    elif keyName == 'right':
+                        command = GameMap.allCommands['rightStop']
+
+            result = gameMap.update(command)
+            gameMap.draw(gameMap.surface)
+            pygame.display.update()
+
+            # Test results.
+            if result == 1:
+                # Win
+                print('I win!!!')
+                pygame.time.delay(500)
+                if GVar.currentLevelNum < GVar.unlockedLevelNum:
+                    GVar.currentLevelNum += 1
+                    return self.actions['nextGame'](*args)
+                else:
+                    if GVar.unlockedLevelNum < GVar.totalLevelNum:
+                        GVar.unlockedLevelNum += 1
+                        GVar.currentLevelNum += 1
+                        return self.actions['nextGame'](*args)
+                    else:
+                        print('I have completed all levels!!!')
+                        return self.actions['quit'](*args)
+            elif result == -1:
+                # Lose
+                print('I lose!!!')
+                pygame.time.delay(500)
+                return self.actions['nextGame'](*args)
 
         return self.game.allStates['default']

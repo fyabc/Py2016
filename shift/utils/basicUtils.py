@@ -6,7 +6,7 @@ import pygame.font
 import pygame.locals
 
 # Local libraries.
-from config.gameConfig import RECORD_FILE_NAME, FONT_NAME
+from config.gameConfig import RECORD_FILE_NAME, FONT_NAME, CELL_SIZE, GAME_SCREEN_SIZE
 
 def lineStripComment(line, commentStr = '#'):
     loc = line.find(commentStr)
@@ -62,3 +62,38 @@ def getKeyName(key, keyMap):
         if key in keyMap[keyName]:
             return keyName
     return None
+
+def sign(x):
+    if x > 0:
+        return +1
+    elif x < 0:
+        return -1
+    else:
+        return 0
+
+def getRealLocation(location):
+    # [NOTE]: return the center location of this cell.
+    return CELL_SIZE * location[0] + CELL_SIZE / 2, \
+           CELL_SIZE * location[1] + CELL_SIZE / 2
+
+def getLogicLocation(location):
+    # fixme: the logic location of bottom and right often +1.
+    return location[0] // CELL_SIZE, location[1] // CELL_SIZE
+
+def getRotateRealCoor(coor, angle):
+    if angle == 0:
+        return coor
+    elif angle == 90:
+        return coor[1], GAME_SCREEN_SIZE[1] - coor[0]
+    elif angle == 180:
+        return GAME_SCREEN_SIZE[0] - coor[0], GAME_SCREEN_SIZE[1] - coor[1]
+    elif angle == 270:
+        return GAME_SCREEN_SIZE[0] - coor[1], coor[0]
+    return coor
+
+def distance(loc1, loc2):
+    from math import sqrt
+    return sqrt((loc1[0] - loc2[0])**2 + (loc1[1] - loc2[1])**2)
+
+def hitSprite(s1, s2):
+    return distance(s1.rect.center, s2.rect.center) <= CELL_SIZE * 0.4

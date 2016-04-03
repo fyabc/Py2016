@@ -12,14 +12,21 @@ class LevelData:
     def __init__(self, rawNum):
         self.rawNum = rawNum
         self.matrix = [[None for _ in range(rawNum)] for _ in range(rawNum)]
-        self.records = {}
+        self.records = {
+            'S' : [],   # Start
+            'D' : [],   # Door
+            'A' : [],   # Arrow
+            'T' : [],   # Trap
+            'K' : [],   # Key
+            'L' : [],   # Lamp
+        }
 
     def getLine(self, line, lineNum):
         for i in range(len(line)):
-            self.matrix[lineNum][i] = int(line[i])
+            self.matrix[lineNum][i] = bool(int(line[i]))
 
     def addRecord(self, record):
-        self.records[record[0]] = (int(record[1]), int(record[2]))
+        self.records[record[0]].append([int(record[i]) for i in range(1, len(record))])
 
 def lineStripComment(line, commentStr = '#'):
     loc = line.find(commentStr)

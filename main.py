@@ -80,7 +80,7 @@ def initGame():
 
     GVar.keyMap = loadKeyMap()
 
-    GVar.totalLevelNum, GVar.levelMap = loadLevels()
+    GVar.totalLevelNum, GVar.levelsData = loadLevels()
 
     GVar.unlockedLevelNum = loadRecord()
 

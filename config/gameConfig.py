@@ -15,7 +15,7 @@ GAME_SCREEN_HEIGHT = 600
 GAME_SCREEN_SIZE = (GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT)
 
 FPS_START = 50  # The fps of start screen.
-FPS_MAIN = 30   # The fps of main game.
+FPS_MAIN = 60   # The fps of main game.
 
 CELL_SIZE = 50  # The size of a cell.
 
@@ -24,6 +24,7 @@ assert GAME_SCREEN_SIZE[0] % CELL_SIZE == 0 and GAME_SCREEN_SIZE[1] % CELL_SIZE 
 BACKGROUND_COLOR = allColors['white']
 
 LEVELS_DIR = 'data/levels'
+IMAGES_DIR = 'data/images'
 
 RECORD_FILE_NAME = 'data/record.txt'
 

@@ -16,4 +16,4 @@ totalLevelNum = None
 unlockedLevelNum = None
 currentLevelNum = None
 
-levelMap = None
+levelsData = None
