@@ -42,3 +42,6 @@ if USE_SYSTEM_FONT:
     # FONT_NAME = None
 else:
     FONT_NAME = 'data/consolas-yahei.ttf'
+
+# Game Show Configs.
+MAP_ROTATE_SPEED = 3

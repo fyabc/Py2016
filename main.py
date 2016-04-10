@@ -84,6 +84,9 @@ def initGame():
 
     GVar.unlockedLevelNum = loadRecord()
 
+    # This may be speed up the game or not?
+    pygame.event.set_blocked(pygame.locals.MOUSEMOTION)
+
 def quitGame():
     saveRecord(GVar.unlockedLevelNum)
     pygame.quit()

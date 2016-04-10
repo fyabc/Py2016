@@ -9,7 +9,7 @@ import pygame
 
 # Local modules.
 from config.gameConfig import CELL_SIZE, allColors, FPS_MAIN, GAME_SCREEN_SIZE
-from shift.utils.basicUtils import hitSprite
+from shift.utils.basicUtils import hitTestByDistance
 
 from shift.gameObjects.mapObjects import Character, Door, Trap, Arrow
 import GVar
@@ -47,30 +47,44 @@ class GameMap:
     def __init__(self, levelData, surface):
         self.surface = surface
         self.direction = 0
-        self.rawNum = levelData.rawNum
+        self.rowNum = levelData.rowNum
+
         self.matrix = deepcopy(levelData.matrix)
+
         self.character = Character(self, location = levelData.records['S'][0])
-        self.door = Door(self, location = levelData.records['D'][0][:2], angle = levelData.records['D'][0][2])
+
+        self.door = Door(
+            self, location = levelData.records['D'][0][:2],
+            angle = levelData.records['D'][0][2]
+        )
+
         self.arrows = pygame.sprite.Group(
             Arrow(self, location = r[:2], angle = r[2])
             for r in levelData.records['A']
         )
+
         self.keys = pygame.sprite.Group()
+
         self.lamps = pygame.sprite.Group()
+
         self.traps = pygame.sprite.Group(*[
             Trap(self, location = r[:2], angle = r[2])
             for r in levelData.records['T']
         ])
 
+        self.staticObjects = pygame.sprite.Group(
+            self.door, self.arrows, self.keys, self.lamps, self.traps
+        )
+
     def getRotateCoordinate(self, coor, angle):
         if angle == 0:
             return coor
         elif angle == 90:
-            return coor[1], self.rawNum - 1 - coor[0]
+            return coor[1], self.rowNum - 1 - coor[0]
         elif angle == 180:
-            return self.rawNum - 1 - coor[0], self.rawNum - 1 - coor[1]
+            return self.rowNum - 1 - coor[0], self.rowNum - 1 - coor[1]
         elif angle == 270:
-            return self.rawNum - 1 - coor[1], coor[0]
+            return self.rowNum - 1 - coor[1], coor[0]
         return coor
 
     def getCellColor(self, location):
@@ -82,9 +96,7 @@ class GameMap:
                 surface.fill(getRealColor(self.matrix[h][w]),
                              pygame.Rect(w * CELL_SIZE, h * CELL_SIZE, CELL_SIZE, CELL_SIZE)
                              )
-        self.door.draw(surface)
-        for arrow in self.arrows: arrow.draw(surface)
-        for trap in self.traps: trap.draw(surface)
+        self.staticObjects.draw(surface)
 
     def draw(self, surface):
         self.drawBackground(surface)
@@ -92,7 +104,7 @@ class GameMap:
 
     def win(self):
         return self.character.isQuiet() and self.door.angle == 0 and\
-               pygame.sprite.collide_rect(self.character, self.door)
+               pygame.sprite.collide_rect_ratio(0.4)(self.character, self.door)
 
     def lose(self):
         return pygame.sprite.spritecollideany(self.character, self.traps) is not None
@@ -110,30 +122,21 @@ class GameMap:
             self.character.toJump()
         elif command == GameMap.allCommands['shift']:
             if self.character.canShift():
-                # Update character image and location.
-                self.character.bgColor = not self.character.bgColor
-                self.character.image = self.character.getImage(self.character.bgColor)
-
-                # flip the image when rotating
-                self.character.image = pygame.transform.flip(self.character.image, True, True)
-
-                self.character.rect.top += CELL_SIZE
-
-                self.rotateCartoon(180)
-                self.rotateMap(180)
-
-                # reset the image after rotating
-                self.character.image = pygame.transform.flip(self.character.image, False, True)
+                self.shiftMap()
 
         self.character.update()
 
         hitArrow = pygame.sprite.spritecollideany(self.character, self.arrows,
-            collided = hitSprite)
+                                                  collided = hitTestByDistance)
         if hitArrow is not None:
             angle = -hitArrow.angle % 360
             if angle != 0:
                 self.rotateCartoon(angle)
                 self.rotateMap(angle)
+                self.character.verticalSpeed = 0 # after rotating, do not jump.
+
+        # hitKey here.
+        # todo
 
         if self.win():
             return 1
@@ -143,11 +146,12 @@ class GameMap:
         return 0
 
     def rotateCartoon(self, angle, origSurface = None):
+        from config.gameConfig import MAP_ROTATE_SPEED
         if angle > 180:
             angle -= 360
-            AnglePerStep = -3
+            AnglePerStep = -MAP_ROTATE_SPEED
         else:
-            AnglePerStep = 3
+            AnglePerStep = MAP_ROTATE_SPEED
 
         if origSurface is None:
             origSurface = pygame.Surface(GAME_SCREEN_SIZE)
@@ -165,10 +169,32 @@ class GameMap:
 
             pygame.display.update()
 
+    def shiftMap(self):
+        # Update character image and location.
+        self.character.bgColor = not self.character.bgColor
+        self.character.image = self.character.getImage(self.character.bgColor)
+
+        # flip the image when rotating
+        self.character.image = pygame.transform.flip(self.character.image, False, True)
+        self.character.rect.top += CELL_SIZE
+
+        # the cartoon of the flipping of character should be here.
+        # todo
+
+        self.rotateCartoon(180)
+        self.rotateMap(180)
+
+        # reset the image after rotating
+        self.character.image = pygame.transform.flip(self.character.image, False, True)
+
     def rotateMap(self, angle):
-        newMatrix = [[None for _ in range(self.rawNum)] for _ in range(self.rawNum)]
-        for y in range(self.rawNum):
-            for x in range(self.rawNum):
+        """rotate the logic structure of the map.
+        :param angle: the angle of rotate.
+        :return: no return.
+        """
+        newMatrix = [[None for _ in range(self.rowNum)] for _ in range(self.rowNum)]
+        for y in range(self.rowNum):
+            for x in range(self.rowNum):
                 newCoor = self.getRotateCoordinate((x, y), angle)
                 newMatrix[newCoor[1]][newCoor[0]] = self.matrix[y][x]
 

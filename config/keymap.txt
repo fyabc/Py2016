@@ -12,6 +12,7 @@ newGame     n
 continue    c
 about       a
 pause       p
+restart     r
 
 # left      a
 # right     d

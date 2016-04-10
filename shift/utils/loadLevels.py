@@ -9,9 +9,9 @@ class LevelData:
         I use this class because the pygame.surface.Surface cannot be copied.
     """
 
-    def __init__(self, rawNum):
-        self.rawNum = rawNum
-        self.matrix = [[None for _ in range(rawNum)] for _ in range(rawNum)]
+    def __init__(self, rowNum):
+        self.rowNum = rowNum
+        self.matrix = [[None for _ in range(rowNum)] for _ in range(rowNum)]
         self.records = {
             'S' : [],   # Start
             'D' : [],   # Door
@@ -51,11 +51,11 @@ def loadLevels(levelsFileName = 'basic.txt', levelsFolderName = LEVELS_DIR):
 
     for currentLevel in range(levelNum):
         index += 1  # parse 'begin'
-        rawNum = int(allLines[index]); index += 1
+        rowNum = int(allLines[index]); index += 1
 
-        levelMap[currentLevel] = LevelData(rawNum)
+        levelMap[currentLevel] = LevelData(rowNum)
 
-        for i in range(rawNum):
+        for i in range(rowNum):
             line = allLines[index].split()
             levelMap[currentLevel].getLine(line, i)
             index += 1

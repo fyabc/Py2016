@@ -220,6 +220,7 @@ class MainGameScreen(MenuScreen):
 
         self.actions['quit'] = lambda *args : self.game.allStates['mainMenuScreen']
         self.actions['nextGame'] = lambda *args : self.game.allStates['mainGame']
+        self.actions['restart'] = self.actions['nextGame']
         # self.actions['pause'] = lambda *args : self.game.allStates['pauseMenuScreen']
 
     def run(self, *args):

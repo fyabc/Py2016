@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 __author__ = 'fyabc'
 
+# Standard libraries.
+from collections import defaultdict
+
 # Dependent libraries.
 import pygame.font
 import pygame.locals
@@ -13,7 +16,7 @@ def lineStripComment(line, commentStr = '#'):
     return line[:None if loc == -1 else loc].strip()
 
 def loadKeyMap():
-    keyMap = {}
+    keyMap = defaultdict(set)
 
     keyMapFile = open('config/keymap.txt', 'r')
 
@@ -23,10 +26,7 @@ def loadKeyMap():
 
         words = line.split()
         if len(words) < 2: continue
-        if words[0] not in keyMap:
-            keyMap[words[0]] = [pygame.locals.__dict__['K_' + words[1]]]
-        else:
-            keyMap[words[0]].append(pygame.locals.__dict__['K_' + words[1]])
+        keyMap[words[0]].add(pygame.locals.__dict__['K_' + words[1]])
 
     keyMapFile.close()
 
@@ -95,5 +95,5 @@ def distance(loc1, loc2):
     from math import sqrt
     return sqrt((loc1[0] - loc2[0])**2 + (loc1[1] - loc2[1])**2)
 
-def hitSprite(s1, s2):
+def hitTestByDistance(s1, s2):
     return distance(s1.rect.center, s2.rect.center) <= CELL_SIZE * 0.4
