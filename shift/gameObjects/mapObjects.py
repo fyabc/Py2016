@@ -238,3 +238,17 @@ class Arrow(StaticObject):
         self.image = StaticObject.getImage(self.bgColor, 'arrow.png', self.angle)
         self.rect = self.image.get_rect()
         self.rect.center = getRealLocation(location)
+
+class Key(StaticObject):
+    def __init__(self, gameMap, location=(0, 0), angle = 0, visible=True):
+        super(Key, self).__init__(gameMap, location, angle, visible)
+        self.image = StaticObject.getImage(self.bgColor, 'arrow.png', self.angle)
+        self.rect = self.image.get_rect()
+        self.rect.center = getRealLocation(location)
+
+class Block(StaticObject):
+    def __init__(self, gameMap, location=(0, 0), angle = 0, visible=True):
+        super(Block, self).__init__(gameMap, location, angle, visible)
+        self.image = StaticObject.getImage(self.bgColor, 'arrow.png', self.angle)
+        self.rect = self.image.get_rect()
+        self.rect.center = getRealLocation(location)
