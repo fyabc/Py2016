@@ -78,14 +78,14 @@ class Character(pygame.sprite.Sprite):
     def hitRight(self, rect):
         logicLocationTR = getLogicLocation(rect.topright)
         logicLocationBR = getLogicLocation((rect.bottomright[0], rect.bottomright[1] - 1))
-        return logicLocationTR[0] == GAME_SCREEN_WIDTH // CELL_SIZE or\
+        return rect.right >= GAME_SCREEN_HEIGHT or\
                (self.gameMap.getCellColor(logicLocationTR) != self.bgColor) or \
                (self.gameMap.getCellColor(logicLocationBR) != self.bgColor)
 
     def hitFloor(self, rect):
         logicLocationBL = getLogicLocation(rect.bottomleft)
         logicLocationBR = getLogicLocation((rect.right - 1, rect.bottom))
-        return logicLocationBL[1] == GAME_SCREEN_HEIGHT // CELL_SIZE or\
+        return rect.bottom >= GAME_SCREEN_HEIGHT or\
                (self.gameMap.getCellColor(logicLocationBL) != self.bgColor) or\
                (self.gameMap.getCellColor(logicLocationBR) != self.bgColor)
 
