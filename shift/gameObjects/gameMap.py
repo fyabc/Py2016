@@ -11,7 +11,7 @@ import pygame
 from config.gameConfig import CELL_SIZE, allColors, FPS_MAIN, GAME_SCREEN_SIZE
 from shift.utils.basicUtils import hitTestByDistance
 
-from shift.gameObjects.mapObjects import Character, Door, Trap, Arrow
+from shift.gameObjects.mapObjects import Character, Door, Trap, Arrow, Key, Block
 import GVar
 
 def getRealColor(logicColor):
@@ -63,7 +63,10 @@ class GameMap:
             for r in levelData.records['A']
         )
 
-        self.keys = pygame.sprite.Group()
+        self.keys = pygame.sprite.Group(
+            Key(self, location = r, angle = 0)
+            for r in levelData.records['K']
+        )
 
         self.lamps = pygame.sprite.Group()
 
@@ -126,6 +129,7 @@ class GameMap:
 
         self.character.update()
 
+        # hitArrow here.
         hitArrow = pygame.sprite.spritecollideany(self.character, self.arrows,
                                                   collided = hitTestByDistance)
         if hitArrow is not None:
@@ -137,6 +141,11 @@ class GameMap:
 
         # hitKey here.
         # todo
+        hitKey = pygame.sprite.spritecollideany(self.character, self.keys,
+                                                collided = lambda s1, s2 : hitTestByDistance(s1, s2, 0.8))
+        if hitKey is not None:
+            print(hitKey.rect)
+            hitKey.kill()
 
         if self.win():
             return 1
@@ -201,8 +210,5 @@ class GameMap:
         self.matrix = newMatrix
 
         self.character.rotate(angle)
-        self.door.rotate(angle)
-        for arrow in self.arrows:
-            arrow.rotate(angle)
-        for trap in self.traps:
-            trap.rotate(angle)
+        for obj in self.staticObjects:
+            obj.rotate(angle)

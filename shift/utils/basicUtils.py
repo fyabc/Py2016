@@ -95,5 +95,5 @@ def distance(loc1, loc2):
     from math import sqrt
     return sqrt((loc1[0] - loc2[0])**2 + (loc1[1] - loc2[1])**2)
 
-def hitTestByDistance(s1, s2):
-    return distance(s1.rect.center, s2.rect.center) <= CELL_SIZE * 0.4
+def hitTestByDistance(s1, s2, ratio = 0.4):
+    return distance(s1.rect.center, s2.rect.center) <= CELL_SIZE * ratio
