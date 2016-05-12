@@ -151,13 +151,19 @@ class GameMap:
                 self.character.verticalSpeed = 0  # after rotating, do not jump.
 
         # hitKey here.
-        # todo
         hitKey = pygame.sprite.spritecollideany(self.character, self.keys,
                                                 collided=lambda s1, s2: hitTestByDistance(s1, s2, 0.5))
         if hitKey is not None:
             for block in hitKey.controlBlocks:
                 block.rotateFromKey()
             hitKey.kill()
+
+        # hitLamp here.
+        # todo
+        hitLamp = pygame.sprite.spritecollideany(self.character, self.keys,
+                                                 collided=lambda s1, s2: hitTestByDistance(s1, s2, 0.5))
+        if hitLamp is not None:
+            hitLamp.kill()
 
         if self.win():
             return 1

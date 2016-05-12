@@ -128,7 +128,6 @@ class StartGameScreen(MenuScreen):
         self.addInactiveThings(
             GameText('Sh', (0.43, 0.2), 60),
             GameText('ift', (0.57, 0.2), 60, allColors['white']),
-            GameText('Author: fyabc<www.github.com/fyabc>', (0.5, 0.85), 18),  # should it be a button?
         )
 
         # some special actions
@@ -137,23 +136,31 @@ class StartGameScreen(MenuScreen):
             GVar.unlockedLevelNum = 1
             return self.game.allStates['mainMenuScreen']
 
+        def __openGitHub(*args):
+            import webbrowser
+            webbrowser.open('github.com/fyabc/Py2016')
+            return self.game.allStates['startGameScreen']
+
         # register actions
         # using callable to do some other actions
         self.actions['newGame'] = __newGameAction
         self.actions['continue'] = lambda *args: self.game.allStates['mainMenuScreen']
         self.actions['help'] = lambda *args: self.game.allStates['helpScreen']
         self.actions['quit'] = lambda *args: self.game.allStates['esc']
+        self.actions['github'] = __openGitHub
 
         newGameButton = ShiftTextButton('New Game(N)', (0.25, 0.4))
         continueButton = ShiftTextButton('Continue(C)', (0.75, 0.4))
         helpButton = ShiftTextButton('Help(H)', (0.25, 0.65))
         quitButton = ShiftTextButton('Quit(Q)', (0.75, 0.65))
+        githubButton = ShiftTextButton('Author: fyabc<www.github.com/fyabc>', (0.5, 0.85), font=getFont(18))
 
         # add buttons to group
         self.addButtonAndAction(newGameButton, self.actions['newGame'])
         self.addButtonAndAction(continueButton, self.actions['continue'])
         self.addButtonAndAction(helpButton, self.actions['help'])
         self.addButtonAndAction(quitButton, self.actions['quit'])
+        self.addButtonAndAction(githubButton, self.actions['github'])
 
 
 class HelpScreen(MenuScreen):
@@ -230,7 +237,7 @@ class MainGameScreen(MenuScreen):
         self.actions['quit'] = lambda *args: self.game.allStates['mainMenuScreen']
         self.actions['nextGame'] = lambda *args: self.game.allStates['mainGame']
         self.actions['restart'] = self.actions['nextGame']
-        # self.actions['pause'] = lambda *args : self.game.allStates['pauseMenuScreen']
+        self.actions['help'] = lambda *args: self.game.allStates['helpScreen']
 
     def run(self, *args):
         self.surface.fill(allColors['white'])

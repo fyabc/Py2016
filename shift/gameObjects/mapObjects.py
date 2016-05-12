@@ -109,8 +109,8 @@ class Character(pygame.sprite.Sprite):
         logicLocationBL = getLogicLocation(self.rect.bottomleft)
         logicLocationBR = getLogicLocation((self.rect.right - 1, self.rect.bottom))
         return logicLocationBL[1] < GAME_SCREEN_HEIGHT // CELL_SIZE and \
-               (self.gameMap.covered(logicLocationBL)) or \
-               (self.gameMap.covered(logicLocationBR)) or \
+               (not self.gameMap.covered(logicLocationBL)) and \
+               (not self.gameMap.covered(logicLocationBR)) and \
                self.gameMap.getCellColor(logicLocationBL) != self.bgColor and \
                self.gameMap.getCellColor(logicLocationBR) != self.bgColor
 

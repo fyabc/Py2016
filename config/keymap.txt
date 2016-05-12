@@ -11,7 +11,7 @@ quit        q
 newGame     n
 continue    c
 about       a
-pause       p
+# pause     p
 restart     r
 
 # left      a
