@@ -4,6 +4,7 @@ __author__ = 'fyabc'
 # Local libraries.
 from config.gameConfig import LEVELS_DIR
 
+
 class LevelData:
     """the class to store level data from file and then be copied to GameMap.
         I use this class because the pygame.surface.Surface cannot be copied.
@@ -13,12 +14,12 @@ class LevelData:
         self.rowNum = rowNum
         self.matrix = [[None for _ in range(rowNum)] for _ in range(rowNum)]
         self.records = {
-            'S' : [],   # Start
-            'D' : [],   # Door
-            'A' : [],   # Arrow
-            'T' : [],   # Trap
-            'K' : [],   # Key
-            'L' : [],   # Lamp
+            'S': [],  # Start
+            'D': [],  # Door
+            'A': [],  # Arrow
+            'T': [],  # Trap
+            'K': [],  # Key
+            'L': [],  # Lamp
         }
 
     def getLine(self, line, lineNum):
@@ -28,11 +29,13 @@ class LevelData:
     def addRecord(self, record):
         self.records[record[0]].append([int(record[i]) for i in range(1, len(record))])
 
-def lineStripComment(line, commentStr = '#'):
+
+def lineStripComment(line, commentStr='#'):
     loc = line.find(commentStr)
     return line[:None if loc == -1 else loc].strip()
 
-def loadLevels(levelsFileName = 'basic.txt', levelsFolderName = LEVELS_DIR):
+
+def loadLevels(levelsFileName='basic.txt', levelsFolderName=LEVELS_DIR):
     levelsFile = open(levelsFolderName + '/' + levelsFileName, 'r')
 
     allLines = levelsFile.read().split('\n')
@@ -51,7 +54,8 @@ def loadLevels(levelsFileName = 'basic.txt', levelsFolderName = LEVELS_DIR):
 
     for currentLevel in range(levelNum):
         index += 1  # parse 'begin'
-        rowNum = int(allLines[index]); index += 1
+        rowNum = int(allLines[index])
+        index += 1
 
         levelMap[currentLevel] = LevelData(rowNum)
 
@@ -61,7 +65,8 @@ def loadLevels(levelsFileName = 'basic.txt', levelsFolderName = LEVELS_DIR):
             index += 1
 
         while allLines[index] != 'end':
-            record = allLines[index].split(); index += 1
+            record = allLines[index].split()
+            index += 1
             levelMap[currentLevel].addRecord(record)
 
         index += 1  # parse 'end'

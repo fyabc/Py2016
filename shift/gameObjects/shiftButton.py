@@ -8,6 +8,7 @@ import pygame
 from config.gameConfig import allColors, GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT
 from shift.utils.basicUtils import getFont, invertColor
 
+
 class ShiftTextButton(pygame.sprite.Sprite):
     """the button in my Shift game with a text
 
@@ -15,8 +16,8 @@ class ShiftTextButton(pygame.sprite.Sprite):
 
     """
 
-    def __init__(self, text = '', position = (0, 0),
-                 color = allColors['white'], textColor = allColors['black'], font = None):
+    def __init__(self, text='', position=(0, 0),
+                 color=allColors['white'], textColor=allColors['black'], font=None):
         """create a new ShiftTextButton
 
             the size of button is determined by its text.
@@ -43,7 +44,7 @@ class ShiftTextButton(pygame.sprite.Sprite):
         self.image = self.font.render(self.text, True, self.textColor, self.color)
         self.rect = self.image.get_rect()
         self.rect.center = (round(GAME_SCREEN_WIDTH * position[0]),
-                             round(GAME_SCREEN_HEIGHT * position[1]))
+                            round(GAME_SCREEN_HEIGHT * position[1]))
 
     def update(self, newState):
         """override this method to update the button
@@ -60,6 +61,7 @@ class ShiftTextButton(pygame.sprite.Sprite):
 
     def inRange(self, position):
         return self.rect.collidepoint(position[0], position[1])
+
 
 class ShiftButtonPool(pygame.sprite.Group):
     def __init__(self):

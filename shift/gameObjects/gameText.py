@@ -8,12 +8,14 @@ import pygame
 from config.gameConfig import *
 from shift.utils.basicUtils import invertColor
 
+
 class GameText:
     """A help class for text string of game.
     """
-    def __init__(self, text = '', location = (0.5, 0.5), fontSize = 40,
-                 fgColor = allColors['black'], bgColor = None,
-                 fontName = FONT_NAME):
+
+    def __init__(self, text='', location=(0.5, 0.5), fontSize=40,
+                 fgColor=allColors['black'], bgColor=None,
+                 fontName=FONT_NAME):
         """
         :param text:
         :param location: The location of the center of the text. Note that it's relative position.

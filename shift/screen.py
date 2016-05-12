@@ -16,9 +16,11 @@ from shift.gameObjects.shiftButton import ShiftTextButton, ShiftButtonPool
 from shift.gameObjects.gameText import GameText
 from shift.utils.basicUtils import getKeyName, getFont
 
+
 class Screen:
     """base class for shift game screens.
     """
+
     def __init__(self, game, surface):
         # [NOTE]: I cannot use 'surface = GVar.mainWindow' here,
         # because the argument must be given after the mainWindow initialized.
@@ -35,9 +37,11 @@ class Screen:
     def run(self, *args):
         pass
 
+
 class MenuScreen(Screen):
     """the menu screen that contains some buttons.
     """
+
     def __init__(self, game, surface):
         super(MenuScreen, self).__init__(game, surface)
 
@@ -116,6 +120,7 @@ class MenuScreen(Screen):
 
         return self.game.allStates['default']
 
+
 class StartGameScreen(MenuScreen):
     def __init__(self, game):
         super(StartGameScreen, self).__init__(game, GVar.mainWindow)
@@ -123,7 +128,7 @@ class StartGameScreen(MenuScreen):
         self.addInactiveThings(
             GameText('Sh', (0.43, 0.2), 60),
             GameText('ift', (0.57, 0.2), 60, allColors['white']),
-            GameText('Author: fyabc<www.github.com/fyabc>', (0.5, 0.85), 18), # should it be a button?
+            GameText('Author: fyabc<www.github.com/fyabc>', (0.5, 0.85), 18),  # should it be a button?
         )
 
         # some special actions
@@ -135,9 +140,9 @@ class StartGameScreen(MenuScreen):
         # register actions
         # using callable to do some other actions
         self.actions['newGame'] = __newGameAction
-        self.actions['continue'] = lambda *args : self.game.allStates['mainMenuScreen']
-        self.actions['help'] = lambda *args : self.game.allStates['helpScreen']
-        self.actions['quit'] = lambda *args : self.game.allStates['esc']
+        self.actions['continue'] = lambda *args: self.game.allStates['mainMenuScreen']
+        self.actions['help'] = lambda *args: self.game.allStates['helpScreen']
+        self.actions['quit'] = lambda *args: self.game.allStates['esc']
 
         newGameButton = ShiftTextButton('New Game(N)', (0.25, 0.4))
         continueButton = ShiftTextButton('Continue(C)', (0.75, 0.4))
@@ -150,11 +155,12 @@ class StartGameScreen(MenuScreen):
         self.addButtonAndAction(helpButton, self.actions['help'])
         self.addButtonAndAction(quitButton, self.actions['quit'])
 
+
 class HelpScreen(MenuScreen):
     def __init__(self, game):
         super(HelpScreen, self).__init__(game, GVar.mainWindow)
 
-        returnButton = ShiftTextButton('Return to main menu(Q)', (0.5, 0.85), font = getFont(25))
+        returnButton = ShiftTextButton('Return to main menu(Q)', (0.5, 0.85), font=getFont(25))
 
         self.addInactiveThings(
             GameText('Help', (0.5, 0.2), 50),
@@ -164,24 +170,25 @@ class HelpScreen(MenuScreen):
             GameText('Shift : shift to another world', (0.5, 0.65), 20),
         )
 
-        self.actions['quit'] = lambda *args : args[0]
+        self.actions['quit'] = lambda *args: args[0]
 
         self.addButtonAndAction(returnButton, self.actions['quit'])
+
 
 class MainMenuScreen(MenuScreen):
     def __init__(self, game):
         super(MainMenuScreen, self).__init__(game, GVar.mainWindow)
 
-        self.actions['quit'] = lambda *args : self.game.allStates['startGameScreen']
-        self.actions['help'] = lambda *args : self.game.allStates['helpScreen']
+        self.actions['quit'] = lambda *args: self.game.allStates['startGameScreen']
+        self.actions['help'] = lambda *args: self.game.allStates['helpScreen']
 
         self.addInactiveThings(
             GameText('Choose a level', (0.5, 0.13), 60, allColors['white'])
         )
 
         columnNum = 5
-        getWidth = lambda num : 0.2 + 0.15 * ((num - 1) % columnNum)
-        getHeight = lambda num : 0.32 + 0.15 * ((num - 1) // columnNum)
+        getWidth = lambda num: 0.2 + 0.15 * ((num - 1) % columnNum)
+        getHeight = lambda num: 0.32 + 0.15 * ((num - 1) // columnNum)
 
         # store buttons of all levels.
         # the screen must choose which button to show decided by GVar.unlockedLevelNum,
@@ -190,13 +197,13 @@ class MainMenuScreen(MenuScreen):
             ShiftTextButton(
                 str(i),
                 (getWidth(i), getHeight(i)),
-                font = getFont(48),
+                font=getFont(48),
             )
             for i in range(1, GVar.totalLevelNum + 1)
         ]
 
-        self.returnButton = ShiftTextButton('Return to main menu(Q)', (0.5, 0.91), font = getFont(25))
-        
+        self.returnButton = ShiftTextButton('Return to main menu(Q)', (0.5, 0.91), font=getFont(25))
+
     def run(self, *args):
         # clean all buttons before and then add buttons. The GVar.unlockedLevelNum may changed.
         self.buttons.empty()
@@ -205,6 +212,7 @@ class MainMenuScreen(MenuScreen):
             def __action(*args):
                 GVar.currentLevelNum = levelNum
                 return self.game.allStates['mainGame']
+
             return __action
 
         for i in range(GVar.unlockedLevelNum):
@@ -214,12 +222,13 @@ class MainMenuScreen(MenuScreen):
 
         return super(MainMenuScreen, self).run(*args)
 
+
 class MainGameScreen(MenuScreen):
     def __init__(self, game):
         super(MainGameScreen, self).__init__(game, GVar.mainWindow)
 
-        self.actions['quit'] = lambda *args : self.game.allStates['mainMenuScreen']
-        self.actions['nextGame'] = lambda *args : self.game.allStates['mainGame']
+        self.actions['quit'] = lambda *args: self.game.allStates['mainMenuScreen']
+        self.actions['nextGame'] = lambda *args: self.game.allStates['mainGame']
         self.actions['restart'] = self.actions['nextGame']
         # self.actions['pause'] = lambda *args : self.game.allStates['pauseMenuScreen']
 

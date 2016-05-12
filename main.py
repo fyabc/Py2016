@@ -23,6 +23,7 @@ globalFont = None
 keyMap = None
 unlockedLevelNum = None
 
+
 class Game:
     """the class of the main game.
     It is a state machine, the states are screens, and the actions are events.
@@ -35,8 +36,8 @@ class Game:
         'mainMenuScreen': 2,
         'helpScreen': 3,
         'mainGame': 4,
-        'aboutScreen' : 5,
-        'pauseMenuScreen' : 6,
+        'aboutScreen': 5,
+        'pauseMenuScreen': 6,
     }
 
     def __init__(self):
@@ -59,6 +60,7 @@ class Game:
 
         quitGame()
 
+
 def main():
     game = Game()
 
@@ -68,6 +70,7 @@ def main():
     game.registerScreen('mainGame', MainGameScreen(game))
 
     game.run()
+
 
 def initGame():
     pygame.init()
@@ -87,11 +90,13 @@ def initGame():
     # This may be speed up the game or not?
     pygame.event.set_blocked(pygame.locals.MOUSEMOTION)
 
+
 def quitGame():
     saveRecord(GVar.unlockedLevelNum)
     pygame.quit()
     print('The game is quited!')
     sys.exit()
+
 
 if __name__ == '__main__':
     main()

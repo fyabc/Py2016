@@ -79,16 +79,16 @@ class GameMap:
             self.door, self.arrows, self.keys, self.lamps, self.traps
         )
 
-    def getRotateCoordinate(self, coor, angle):
+    def getRotateCoordinate(self, coordinate, angle):
         if angle == 0:
-            return coor
+            return coordinate
         elif angle == 90:
-            return coor[1], self.rowNum - 1 - coor[0]
+            return coordinate[1], self.rowNum - 1 - coordinate[0]
         elif angle == 180:
-            return self.rowNum - 1 - coor[0], self.rowNum - 1 - coor[1]
+            return self.rowNum - 1 - coordinate[0], self.rowNum - 1 - coordinate[1]
         elif angle == 270:
-            return self.rowNum - 1 - coor[1], coor[0]
-        return coor
+            return self.rowNum - 1 - coordinate[1], coordinate[0]
+        return coordinate
 
     def getCellColor(self, location):
         return self.matrix[location[1]][location[0]]

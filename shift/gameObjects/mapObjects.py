@@ -8,6 +8,7 @@ import pygame
 from config.gameConfig import CELL_SIZE, GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT, IMAGES_DIR, FPS_MAIN
 from shift.utils.basicUtils import sign, getRealLocation, getLogicLocation, getRotateRealCoor
 
+
 class Character(pygame.sprite.Sprite):
     """the class of the character of the game.
 
@@ -23,7 +24,7 @@ class Character(pygame.sprite.Sprite):
     MaxDownSpeed = +0.2
     G = +0.02  # gravity
 
-    def __init__(self, gameMap, location = (0, 0), visible = True):
+    def __init__(self, gameMap, location=(0, 0), visible=True):
         """
             gameMap : the gameMap the character belongs to
             bgColor : the background color of the character (the logical background)
@@ -57,10 +58,10 @@ class Character(pygame.sprite.Sprite):
     @staticmethod
     def getImage(bgColor):
         if Character.ImageWhite is None:
-            Character.ImageWhite =\
+            Character.ImageWhite = \
                 pygame.image.load(IMAGES_DIR + '/whiteBG/character.png').convert_alpha()
         if Character.ImageBlack is None:
-            Character.ImageBlack =\
+            Character.ImageBlack = \
                 pygame.image.load(IMAGES_DIR + '/blackBG/character.png').convert_alpha()
 
         if bgColor is True:
@@ -71,37 +72,37 @@ class Character(pygame.sprite.Sprite):
     def hitLeft(self, rect):
         logicLocationTL = getLogicLocation(rect.topleft)
         logicLocationBL = getLogicLocation((rect.bottomleft[0], rect.bottomleft[1] - 1))
-        return rect.left <= 0 or\
+        return rect.left <= 0 or \
                (self.gameMap.getCellColor(logicLocationTL) != self.bgColor) or \
                (self.gameMap.getCellColor(logicLocationBL) != self.bgColor)
 
     def hitRight(self, rect):
         logicLocationTR = getLogicLocation(rect.topright)
         logicLocationBR = getLogicLocation((rect.bottomright[0], rect.bottomright[1] - 1))
-        return rect.right >= GAME_SCREEN_HEIGHT or\
+        return rect.right >= GAME_SCREEN_HEIGHT or \
                (self.gameMap.getCellColor(logicLocationTR) != self.bgColor) or \
                (self.gameMap.getCellColor(logicLocationBR) != self.bgColor)
 
     def hitFloor(self, rect):
         logicLocationBL = getLogicLocation(rect.bottomleft)
         logicLocationBR = getLogicLocation((rect.right - 1, rect.bottom))
-        return rect.bottom >= GAME_SCREEN_HEIGHT or\
-               (self.gameMap.getCellColor(logicLocationBL) != self.bgColor) or\
+        return rect.bottom >= GAME_SCREEN_HEIGHT or \
+               (self.gameMap.getCellColor(logicLocationBL) != self.bgColor) or \
                (self.gameMap.getCellColor(logicLocationBR) != self.bgColor)
 
     def hitCeil(self, rect):
         logicLocationTL = getLogicLocation(rect.topleft)
         logicLocationTR = getLogicLocation((rect.right - 1, rect.top))
-        return rect.top <= 0 or\
-               (self.gameMap.getCellColor(logicLocationTL) != self.bgColor) or\
+        return rect.top <= 0 or \
+               (self.gameMap.getCellColor(logicLocationTL) != self.bgColor) or \
                (self.gameMap.getCellColor(logicLocationTR) != self.bgColor)
 
     def canShift(self):
         logicLocationBL = getLogicLocation(self.rect.bottomleft)
         logicLocationBR = getLogicLocation((self.rect.right - 1, self.rect.bottom))
-        return logicLocationBL[1] < GAME_SCREEN_HEIGHT // CELL_SIZE and\
-                self.gameMap.getCellColor(logicLocationBL) != self.bgColor and\
-                self.gameMap.getCellColor(logicLocationBR) != self.bgColor
+        return logicLocationBL[1] < GAME_SCREEN_HEIGHT // CELL_SIZE and \
+               self.gameMap.getCellColor(logicLocationBL) != self.bgColor and \
+               self.gameMap.getCellColor(logicLocationBR) != self.bgColor
 
     def isQuiet(self):
         return self.verticalSpeed == 0
@@ -111,7 +112,7 @@ class Character(pygame.sprite.Sprite):
         if self.visible:
             surface.blit(self.image, self.rect)
 
-    def update(self, FPS = FPS_MAIN):
+    def update(self, FPS=FPS_MAIN):
         if FPS != 0:
             self.updateCartoon()
 
@@ -121,7 +122,7 @@ class Character(pygame.sprite.Sprite):
 
         if self.state[0] != +2:
             if self.hitLeft(self.rect):
-                self.rect.left = self.rect.right // CELL_SIZE * CELL_SIZE # [NOTE]
+                self.rect.left = self.rect.right // CELL_SIZE * CELL_SIZE  # [NOTE]
 
         if self.state[0] != -2:
             if self.hitRight(self.rect):
@@ -140,7 +141,7 @@ class Character(pygame.sprite.Sprite):
         else:
             if self.hitCeil(self.rect):
                 self.verticalSpeed = 0
-                self.rect.top = self.rect.bottom // CELL_SIZE * CELL_SIZE # [NOTE]
+                self.rect.top = self.rect.bottom // CELL_SIZE * CELL_SIZE  # [NOTE]
             else:
                 self.verticalSpeed += self.G
 
@@ -180,11 +181,12 @@ class Character(pygame.sprite.Sprite):
     def rotate(self, angle):
         self.rect.center = getRotateRealCoor(self.rect.center, angle)
 
+
 class StaticObject(pygame.sprite.Sprite):
     ImageWhite = {}
     ImageBlack = {}
 
-    def __init__(self, gameMap, location=(0, 0), angle = 0, visible=True):
+    def __init__(self, gameMap, location=(0, 0), angle=0, visible=True):
         super(StaticObject, self).__init__()
 
         self.gameMap = gameMap
@@ -197,7 +199,7 @@ class StaticObject(pygame.sprite.Sprite):
         self.rect = None
 
     @staticmethod
-    def getImage(bgColor, imageName, angle = 0):
+    def getImage(bgColor, imageName, angle=0):
         if bgColor is True:
             Image = StaticObject.ImageWhite
             if imageName not in Image:
@@ -218,40 +220,39 @@ class StaticObject(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = newCenter
 
+
 class Door(StaticObject):
-    def __init__(self, gameMap, location=(0, 0), angle = 0, visible=True):
+    def __init__(self, gameMap, location=(0, 0), angle=0, visible=True):
         super(Door, self).__init__(gameMap, location, angle, visible)
         self.image = StaticObject.getImage(self.bgColor, 'door.png', self.angle)
         self.rect = self.image.get_rect()
         self.rect.center = getRealLocation(location)
 
+
 class Trap(StaticObject):
-    def __init__(self, gameMap, location=(0, 0), angle = 0, visible=True):
+    def __init__(self, gameMap, location=(0, 0), angle=0, visible=True):
         super(Trap, self).__init__(gameMap, location, angle, visible)
         self.image = StaticObject.getImage(self.bgColor, 'trap.png', self.angle)
         self.rect = self.image.get_rect()
         self.rect.center = getRealLocation(location)
 
+
 class Arrow(StaticObject):
-    def __init__(self, gameMap, location=(0, 0), angle = 0, visible=True):
+    def __init__(self, gameMap, location=(0, 0), angle=0, visible=True):
         super(Arrow, self).__init__(gameMap, location, angle, visible)
         self.image = StaticObject.getImage(self.bgColor, 'arrow.png', self.angle)
         self.rect = self.image.get_rect()
         self.rect.center = getRealLocation(location)
 
+
 class Key(StaticObject):
-    def __init__(self, gameMap, location=(0, 0), angle = 0, visible=True):
+    def __init__(self, gameMap, location=(0, 0), angle=0, visible=True):
         super(Key, self).__init__(gameMap, location, angle, visible)
         self.image = StaticObject.getImage(self.bgColor, 'key.png', self.angle)
         self.rect = self.image.get_rect()
         self.rect.center = getRealLocation(location)
 
-# class Block(StaticObject):
-#     def __init__(self, gameMap, location=(0, 0), angle = 0, visible=True):
-#         super(Block, self).__init__(gameMap, location, angle, visible)
-#         self.image = StaticObject.getImage(self.bgColor, 'arrow.png', self.angle)
-#         self.rect = self.image.get_rect()
-#         self.rect.center = getRealLocation(location)
+
 class Block(pygame.sprite.Sprite):
     def __init__(self):
         super(Block, self).__init__()
