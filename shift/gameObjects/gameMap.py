@@ -14,11 +14,13 @@ from shift.utils.basicUtils import hitTestByDistance
 from shift.gameObjects.mapObjects import Character, Door, Trap, Arrow, Key, Block
 import GVar
 
+
 def getRealColor(logicColor):
     if logicColor is True:
         return allColors['white']
     else:
         return allColors['black']
+
 
 class GameMap:
     """the class of the game map.
@@ -35,13 +37,13 @@ class GameMap:
     """
 
     allCommands = {
-        'noOp'      : 0,
-        'jump'      : 1,
-        'left'      : 2,
-        'leftStop'  : 3,
-        'right'     : 4,
-        'rightStop' : 5,
-        'shift'     : 6,
+        'noOp': 0,
+        'jump': 1,
+        'left': 2,
+        'leftStop': 3,
+        'right': 4,
+        'rightStop': 5,
+        'shift': 6,
     }
 
     def __init__(self, levelData, surface):
@@ -51,32 +53,41 @@ class GameMap:
 
         self.matrix = deepcopy(levelData.matrix)
 
-        self.character = Character(self, location = levelData.records['S'][0])
+        self.character = Character(self, location=levelData.records['S'][0])
 
         self.door = Door(
-            self, location = levelData.records['D'][0][:2],
-            angle = levelData.records['D'][0][2]
+            self, location=levelData.records['D'][0][:2],
+            angle=levelData.records['D'][0][2]
         )
 
         self.arrows = pygame.sprite.Group(
-            Arrow(self, location = r[:2], angle = r[2])
+            Arrow(self, location=r[:2], angle=r[2])
             for r in levelData.records['A']
         )
 
-        self.keys = pygame.sprite.Group(
-            Key(self, location = r, angle = 0)
-            for r in levelData.records['K']
-        )
-
-        self.lamps = pygame.sprite.Group()
-
         self.traps = pygame.sprite.Group(*[
-            Trap(self, location = r[:2], angle = r[2])
+            Trap(self, location=r[:2], angle=r[2])
             for r in levelData.records['T']
         ])
 
+        self.blocks = pygame.sprite.Group(*[
+            Block(self, Id=r[4], start=r[:2], length=r[2], angle=r[3])
+            for r in levelData.records['B']
+        ])
+
+        # keys must be initialized after blocks
+        self.keys = pygame.sprite.Group(
+            Key(self, location=r[:2], blockIds=r[2:], angle=0)
+            for r in levelData.records['K']
+        )
+
+        self.mosaics = pygame.sprite.Group()
+
+        # lamps must be initialized after mosaics
+        self.lamps = pygame.sprite.Group()
+
         self.staticObjects = pygame.sprite.Group(
-            self.door, self.arrows, self.keys, self.lamps, self.traps
+            self.door, self.arrows, self.keys, self.mosaics, self.lamps, self.traps, self.blocks
         )
 
     def getRotateCoordinate(self, coordinate, angle):
@@ -106,7 +117,7 @@ class GameMap:
         self.character.draw(surface)
 
     def win(self):
-        return self.character.isQuiet() and self.door.angle == 0 and\
+        return self.character.isQuiet() and self.door.angle == 0 and \
                pygame.sprite.collide_rect_ratio(0.4)(self.character, self.door)
 
     def lose(self):
@@ -131,20 +142,21 @@ class GameMap:
 
         # hitArrow here.
         hitArrow = pygame.sprite.spritecollideany(self.character, self.arrows,
-                                                  collided = hitTestByDistance)
+                                                  collided=hitTestByDistance)
         if hitArrow is not None:
             angle = -hitArrow.angle % 360
             if angle != 0:
                 self.rotateCartoon(angle)
                 self.rotateMap(angle)
-                self.character.verticalSpeed = 0 # after rotating, do not jump.
+                self.character.verticalSpeed = 0  # after rotating, do not jump.
 
         # hitKey here.
         # todo
         hitKey = pygame.sprite.spritecollideany(self.character, self.keys,
-                                                collided = lambda s1, s2 : hitTestByDistance(s1, s2, 0.8))
+                                                collided=lambda s1, s2: hitTestByDistance(s1, s2, 0.5))
         if hitKey is not None:
-            print(hitKey.rect)
+            for block in hitKey.controlBlocks:
+                block.rotateFromKey()
             hitKey.kill()
 
         if self.win():
@@ -154,7 +166,7 @@ class GameMap:
 
         return 0
 
-    def rotateCartoon(self, angle, origSurface = None):
+    def rotateCartoon(self, angle, origSurface=None):
         from config.gameConfig import MAP_ROTATE_SPEED
         if angle > 180:
             angle -= 360
@@ -177,6 +189,14 @@ class GameMap:
             self.surface.blit(rotateSurface, rotateRect)
 
             pygame.display.update()
+
+    def covered(self, location):
+        """test if the input logic location is covered by any block or mosaic.
+        """
+        for block in self.blocks:
+            if block.cover(location):
+                return True
+        return False
 
     def shiftMap(self):
         # Update character image and location.

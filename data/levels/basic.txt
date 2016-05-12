@@ -29,7 +29,7 @@ begin
 0 0 0 0 0 0 0 0 0 0 0 0
 
 S 0 5       # S = start
-D 11 5 0    # D = destination
+D 11 5 0    # D = destination, the 3rd number is the direction, 0 is DOWN, 90 is RIGHT, 180 is UP, 270 is LEFT.
 
 end
 
@@ -52,7 +52,7 @@ begin
 
 S 0 5
 D 11 5 0
-T 3 11 0    # T = trap
+T 3 11 0    # T = trap, if the direction is 180, it means the trap is like 'VVV'.
 T 4 11 0
 T 8 11 0
 T 9 11 0
@@ -145,15 +145,21 @@ begin
 1 1 1 1 1 1 1 1 1 1 1 1
 1 1 1 1 1 1 1 1 1 1 1 1
 1 1 1 1 1 1 1 1 1 1 1 1
-0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0
+1 1 1 1 1 1 1 1 1 1 1 1
+0 0 0 0 0 1 1 0 0 1 1 1
+1 1 1 1 1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1 1 1 0 1
+1 1 1 1 1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1 1 1 1 1
 
-S 0 5
-D 11 5 0
-K 0 3
+S 0 11
+D 11 11 0
+K 0 6 0 1 2 3   # K = key, the 3rd and more number is id of blocks
+K 11 5 4
+B 8 11 1 0 0    # B = block, the 1st & 2nd number is start location, the 3rd is length, the 4th is direction, the 5th is id
+B 9 10 2 0 1
+B 10 9 3 0 2
+B 11 8 4 0 3
+B 3 9 5 180 4
 
 end

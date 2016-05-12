@@ -20,6 +20,7 @@ class LevelData:
             'T': [],  # Trap
             'K': [],  # Key
             'L': [],  # Lamp
+            'B': [],  # Block
         }
 
     def getLine(self, line, lineNum):

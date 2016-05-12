@@ -5,7 +5,7 @@ __author__ = 'fyabc'
 import pygame
 
 # Local modules.
-from config.gameConfig import CELL_SIZE, GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT, IMAGES_DIR, FPS_MAIN
+from config.gameConfig import CELL_SIZE, GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT, IMAGES_DIR, FPS_MAIN, allColors
 from shift.utils.basicUtils import sign, getRealLocation, getLogicLocation, getRotateRealCoor
 
 
@@ -73,6 +73,8 @@ class Character(pygame.sprite.Sprite):
         logicLocationTL = getLogicLocation(rect.topleft)
         logicLocationBL = getLogicLocation((rect.bottomleft[0], rect.bottomleft[1] - 1))
         return rect.left <= 0 or \
+               (self.gameMap.covered(logicLocationTL)) or \
+               (self.gameMap.covered(logicLocationBL)) or \
                (self.gameMap.getCellColor(logicLocationTL) != self.bgColor) or \
                (self.gameMap.getCellColor(logicLocationBL) != self.bgColor)
 
@@ -80,6 +82,8 @@ class Character(pygame.sprite.Sprite):
         logicLocationTR = getLogicLocation(rect.topright)
         logicLocationBR = getLogicLocation((rect.bottomright[0], rect.bottomright[1] - 1))
         return rect.right >= GAME_SCREEN_HEIGHT or \
+               (self.gameMap.covered(logicLocationTR)) or \
+               (self.gameMap.covered(logicLocationBR)) or \
                (self.gameMap.getCellColor(logicLocationTR) != self.bgColor) or \
                (self.gameMap.getCellColor(logicLocationBR) != self.bgColor)
 
@@ -87,6 +91,8 @@ class Character(pygame.sprite.Sprite):
         logicLocationBL = getLogicLocation(rect.bottomleft)
         logicLocationBR = getLogicLocation((rect.right - 1, rect.bottom))
         return rect.bottom >= GAME_SCREEN_HEIGHT or \
+               (self.gameMap.covered(logicLocationBL)) or \
+               (self.gameMap.covered(logicLocationBR)) or \
                (self.gameMap.getCellColor(logicLocationBL) != self.bgColor) or \
                (self.gameMap.getCellColor(logicLocationBR) != self.bgColor)
 
@@ -94,6 +100,8 @@ class Character(pygame.sprite.Sprite):
         logicLocationTL = getLogicLocation(rect.topleft)
         logicLocationTR = getLogicLocation((rect.right - 1, rect.top))
         return rect.top <= 0 or \
+               (self.gameMap.covered(logicLocationTL)) or \
+               (self.gameMap.covered(logicLocationTR)) or \
                (self.gameMap.getCellColor(logicLocationTL) != self.bgColor) or \
                (self.gameMap.getCellColor(logicLocationTR) != self.bgColor)
 
@@ -101,6 +109,8 @@ class Character(pygame.sprite.Sprite):
         logicLocationBL = getLogicLocation(self.rect.bottomleft)
         logicLocationBR = getLogicLocation((self.rect.right - 1, self.rect.bottom))
         return logicLocationBL[1] < GAME_SCREEN_HEIGHT // CELL_SIZE and \
+               (self.gameMap.covered(logicLocationBL)) or \
+               (self.gameMap.covered(logicLocationBR)) or \
                self.gameMap.getCellColor(logicLocationBL) != self.bgColor and \
                self.gameMap.getCellColor(logicLocationBR) != self.bgColor
 
@@ -157,7 +167,6 @@ class Character(pygame.sprite.Sprite):
             self.image = pygame.transform.flip(self.getImage(self.bgColor), True, False)
         else:
             self.image = self.getImage(self.bgColor)
-        pass
 
     # There are some help methods below.
     def toLeft(self):
@@ -246,13 +255,142 @@ class Arrow(StaticObject):
 
 
 class Key(StaticObject):
-    def __init__(self, gameMap, location=(0, 0), angle=0, visible=True):
+    def __init__(self, gameMap, blockIds, location, angle=0, visible=True):
         super(Key, self).__init__(gameMap, location, angle, visible)
         self.image = StaticObject.getImage(self.bgColor, 'key.png', self.angle)
         self.rect = self.image.get_rect()
         self.rect.center = getRealLocation(location)
 
+        self.controlBlocks = set()
+
+        for blockId in blockIds:
+            self.controlBlocks.add(self.findBlock(blockId))
+
+    def findBlock(self, blockId):
+        for block in self.gameMap.blocks:
+            if block.Id == blockId:
+                return block
+        return None
+
 
 class Block(pygame.sprite.Sprite):
-    def __init__(self):
+    UP = 180
+    DOWN = 0
+    LEFT = 270
+    RIGHT = 90
+
+    Image = None
+
+    @staticmethod
+    def getImage():
+        if Block.Image is None:
+            Block.Image = pygame.image.load(IMAGES_DIR + '/block.png').convert_alpha()
+        return Block.Image
+
+    def __init__(self, gameMap, Id, start, length, angle):
+        """A block is like below:
+        . . . . . . . .
+        . # # * . . . .
+        . . . . . . . .
+
+        :param gameMap: the gameMap of this Block.
+        :param start: a pair of (x, y), the location of *.
+        :param length: the length of the block, 3 in above.
+        :param angle: the direction of the block, left in above.
+
+        after rotate:
+
+        . . . . . . . .
+        . . . . * # # .
+        . . . . . . . .
+
+        """
         super(Block, self).__init__()
+        self.gameMap = gameMap
+        self.Id = Id
+
+        self.image = pygame.Surface((1 * CELL_SIZE, length * CELL_SIZE))
+
+        # draw block.
+        LINE_WIDTH = 2
+        pygame.draw.rect(self.image, allColors['black'], (0, 0, 1 * CELL_SIZE, length * CELL_SIZE), LINE_WIDTH)
+        pygame.draw.rect(self.image, allColors['white'],
+                         (LINE_WIDTH, LINE_WIDTH, 1 * CELL_SIZE - 2 * LINE_WIDTH, length * CELL_SIZE - 2 * LINE_WIDTH),
+                         LINE_WIDTH)
+
+        blockImage = pygame.transform.rotate(Block.getImage(), 90)
+        self.image.blit(blockImage, (self.image.get_width() // 2 - blockImage.get_width() // 2,
+                                     self.image.get_height() // 2 - blockImage.get_height() // 2,
+                                     blockImage.get_width(), blockImage.get_height()))
+
+        self.image = pygame.transform.rotate(self.image, angle).convert_alpha()
+        self.rect = self.image.get_rect()
+
+        self.rotateCenter = (0, 0)
+        self.angle = angle
+        self.setCenter(angle, start)
+        self.setRect()
+
+    def setCenter(self, direction, start):
+        if direction == Block.UP:
+            self.rotateCenter = (start[0] * CELL_SIZE + CELL_SIZE // 2, (start[1] + 1) * CELL_SIZE)
+        elif direction == Block.DOWN:
+            self.rotateCenter = (start[0] * CELL_SIZE + CELL_SIZE // 2, start[1] * CELL_SIZE)
+        elif direction == Block.LEFT:
+            self.rotateCenter = ((start[0] + 1) * CELL_SIZE, start[1] * CELL_SIZE + CELL_SIZE // 2)
+        elif direction == Block.RIGHT:
+            self.rotateCenter = (start[0] * CELL_SIZE, start[1] * CELL_SIZE + CELL_SIZE // 2)
+
+    def setRect(self):
+        if self.angle == Block.UP:
+            self.rect.midbottom = self.rotateCenter
+        elif self.angle == Block.DOWN:
+            self.rect.midtop = self.rotateCenter
+        elif self.angle == Block.LEFT:
+            self.rect.midright = self.rotateCenter
+        elif self.angle == Block.RIGHT:
+            self.rect.midleft = self.rotateCenter
+
+    def rotateFromKey(self):
+        from config.gameConfig import MAP_ROTATE_SPEED
+        import GVar
+        import math
+
+        # remove self from blocks to avoid draw the original block on the surface.
+        self.remove(self.gameMap.staticObjects, self.gameMap.blocks)
+
+        for currAngle in range(0, 180, MAP_ROTATE_SPEED):
+            GVar.globalTimer.tick(FPS_MAIN)
+            self.gameMap.draw(self.gameMap.surface)
+
+            rotatedImage = pygame.transform.rotate(self.image, currAngle).convert_alpha()
+            radius = max(self.rect.width, self.rect.height) // 2
+            realAngle = (self.angle + currAngle - 90) * math.pi / 180
+            newCenter = (self.rotateCenter[0] + math.cos(realAngle) * radius,
+                         self.rotateCenter[1] - math.sin(realAngle) * radius)
+            rotateRect = rotatedImage.get_rect()
+            rotateRect.center = newCenter
+            self.gameMap.surface.blit(rotatedImage, rotateRect)
+            pygame.display.update()
+
+        self.angle = (self.angle + 180) % 360
+        self.image = pygame.transform.rotate(self.image, 180)
+        self.rect = self.image.get_rect()
+        self.setRect()
+
+        # add back.
+        self.add(self.gameMap.staticObjects, self.gameMap.blocks)
+
+    def rotate(self, angle):
+        self.angle = (self.angle + angle) % 360
+        self.rotateCenter = getRotateRealCoor(self.rotateCenter, angle)
+        self.image = pygame.transform.rotate(self.image, angle)
+        self.rect = self.image.get_rect()
+        self.setRect()
+
+    def cover(self, location):
+        """test if the location is covered by this block.
+        :param location: the input logic location
+        :return: bool, the location is covered or not.
+        """
+        return self.rect.collidepoint(getRealLocation(location))
