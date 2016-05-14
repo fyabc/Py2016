@@ -21,6 +21,7 @@ class LevelData:
             'K': [],  # Key
             'L': [],  # Lamp
             'B': [],  # Block
+            'M': [],  # Mosaic
         }
 
     def getLine(self, line, lineNum):
@@ -48,28 +49,29 @@ def loadLevels(levelsFileName='basic.txt', levelsFolderName=LEVELS_DIR):
         for line in allLines if len(lineStripComment(line)) > 0
     ]
 
-    levelNum = int(allLines[0])
-    levelMap = [None] * levelNum
+    levelNum = 0
+    levelMap = []
 
-    index = 1
-
-    for currentLevel in range(levelNum):
+    index = 0
+    while index < len(allLines):
         index += 1  # parse 'begin'
         rowNum = int(allLines[index])
         index += 1
 
-        levelMap[currentLevel] = LevelData(rowNum)
+        levelMap.append(LevelData(rowNum))
 
         for i in range(rowNum):
             line = allLines[index].split()
-            levelMap[currentLevel].getLine(line, i)
+            levelMap[levelNum].getLine(line, i)
             index += 1
 
         while allLines[index] != 'end':
             record = allLines[index].split()
             index += 1
-            levelMap[currentLevel].addRecord(record)
+            levelMap[levelNum].addRecord(record)
 
         index += 1  # parse 'end'
+
+        levelNum += 1
 
     return levelNum, levelMap

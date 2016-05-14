@@ -7,6 +7,7 @@ import pygame
 # Local modules.
 from config.gameConfig import CELL_SIZE, GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT, IMAGES_DIR, FPS_MAIN, allColors
 from shift.utils.basicUtils import sign, getRealLocation, getLogicLocation, getRotateRealCoor
+from shift.gameObjects.gameText import GameText
 
 
 class Character(pygame.sprite.Sprite):
@@ -18,18 +19,20 @@ class Character(pygame.sprite.Sprite):
     ImageWhite = None
     ImageBlack = None
 
-    HorizontalSpeed = 0.1
+    HorizontalSpeed = 0.108
 
-    InitJumpSpeed = -0.25
+    # [NOTE]:
+    # These speeds have been set carefully.
+    # Do NOT change it unless you have test it many times.
+    InitJumpSpeed = -0.24
     MaxDownSpeed = +0.2
-    G = +0.02  # gravity
+    G = +0.027  # gravity
 
     def __init__(self, gameMap, location=(0, 0), visible=True):
         """
             gameMap : the gameMap the character belongs to
             bgColor : the background color of the character (the logical background)
             location : the initial location of the character (the logical location)
-
         """
         super(Character, self).__init__()
 
@@ -52,7 +55,7 @@ class Character(pygame.sprite.Sprite):
         #     +2 : right running
         # }
         #
-        self.state = [0]
+        self.state = 0
         self.verticalSpeed = 0
 
     @staticmethod
@@ -81,7 +84,7 @@ class Character(pygame.sprite.Sprite):
     def hitRight(self, rect):
         logicLocationTR = getLogicLocation(rect.topright)
         logicLocationBR = getLogicLocation((rect.bottomright[0], rect.bottomright[1] - 1))
-        return rect.right >= GAME_SCREEN_HEIGHT or \
+        return rect.right >= GAME_SCREEN_WIDTH or \
                (self.gameMap.covered(logicLocationTR)) or \
                (self.gameMap.covered(logicLocationBR)) or \
                (self.gameMap.getCellColor(logicLocationTR) != self.bgColor) or \
@@ -127,19 +130,19 @@ class Character(pygame.sprite.Sprite):
             self.updateCartoon()
 
         # calculate new horizontal location
-        if abs(self.state[0]) == 2:
-            self.rect.left += sign(self.state[0]) * self.HorizontalSpeed * FPS
+        if abs(self.state) == 2:
+            self.rect.left += sign(self.state) * self.HorizontalSpeed * FPS
 
-        if self.state[0] != +2:
+        if self.state != +2:
             if self.hitLeft(self.rect):
                 self.rect.left = self.rect.right // CELL_SIZE * CELL_SIZE  # [NOTE]
 
-        if self.state[0] != -2:
+        if self.state != -2:
             if self.hitRight(self.rect):
                 self.rect.right = self.rect.right // CELL_SIZE * CELL_SIZE
 
         # calculate new vertical location
-        self.rect.top += int(self.verticalSpeed * FPS)
+        self.rect.top += self.verticalSpeed * FPS
 
         if self.verticalSpeed >= 0:
             if self.hitFloor(self.rect):
@@ -158,30 +161,46 @@ class Character(pygame.sprite.Sprite):
     def updateCartoon(self):
         """this method update the cartoon of the character.
         """
-        if abs(self.state[0]) == 1:
+        if abs(self.state) == 1:
             pass
         else:
             pass
 
-        if self.state[0] < 0:
+        if self.state < 0:
             self.image = pygame.transform.flip(self.getImage(self.bgColor), True, False)
         else:
             self.image = self.getImage(self.bgColor)
 
+    def deathCartoon(self):
+        self.visible = False
+        self.gameMap.draw(self.gameMap.surface)
+
+        deathImage = pygame.image.load(IMAGES_DIR + '/death_character.png').convert_alpha()
+        deathMessage = GameText(' You lose! ', (0.5, 0.3), 30, allColors['red'], allColors['white'])
+
+        self.gameMap.surface.blit(deathImage, self.rect)
+        deathMessage.draw(self.gameMap.surface)
+
+        pygame.display.update()
+
+        pygame.time.delay(1000)
+
+        self.visible = True
+
     # There are some help methods below.
     def toLeft(self):
-        self.state[0] = -2
+        self.state = -2
 
     def toLeftStop(self):
-        if self.state[0] < 0:
-            self.state[0] = -1
+        if self.state < 0:
+            self.state = -1
 
     def toRight(self):
-        self.state[0] = +2
+        self.state = +2
 
     def toRightStop(self):
-        if self.state[0] > 0:
-            self.state[0] = +1
+        if self.state > 0:
+            self.state = +1
 
     def toJump(self):
         if self.verticalSpeed == 0:
@@ -195,7 +214,7 @@ class StaticObject(pygame.sprite.Sprite):
     ImageWhite = {}
     ImageBlack = {}
 
-    def __init__(self, gameMap, location=(0, 0), angle=0, visible=True):
+    def __init__(self, gameMap, imageName, location=(0, 0), angle=0, visible=True):
         super(StaticObject, self).__init__()
 
         self.gameMap = gameMap
@@ -204,8 +223,18 @@ class StaticObject(pygame.sprite.Sprite):
         self.visible = visible
         self.angle = angle
 
-        self.image = None
-        self.rect = None
+        self.image = StaticObject.getImage(self.bgColor, imageName, self.angle)
+
+        self.rect = self.image.get_rect()
+
+        if self.angle == 0:
+            self.rect.midbottom = (CELL_SIZE * location[0] + CELL_SIZE / 2, CELL_SIZE * (location[1] + 1))
+        elif self.angle == 90:
+            self.rect.midright = (CELL_SIZE * (location[0] + 1), CELL_SIZE * location[1] + CELL_SIZE / 2)
+        elif self.angle == 180:
+            self.rect.midtop = (CELL_SIZE * location[0] + CELL_SIZE / 2, CELL_SIZE * location[1])
+        elif self.angle == 270:
+            self.rect.midleft = (CELL_SIZE * location[0], CELL_SIZE * location[1] + CELL_SIZE / 2)
 
     @staticmethod
     def getImage(bgColor, imageName, angle=0):
@@ -217,7 +246,7 @@ class StaticObject(pygame.sprite.Sprite):
             Image = StaticObject.ImageBlack
             if imageName not in Image:
                 Image[imageName] = pygame.image.load(IMAGES_DIR + '/blackBG/' + imageName).convert_alpha()
-        return pygame.transform.rotate(Image[imageName], angle)
+        return pygame.transform.rotate(Image[imageName], angle).convert_alpha()
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)
@@ -232,34 +261,22 @@ class StaticObject(pygame.sprite.Sprite):
 
 class Door(StaticObject):
     def __init__(self, gameMap, location=(0, 0), angle=0, visible=True):
-        super(Door, self).__init__(gameMap, location, angle, visible)
-        self.image = StaticObject.getImage(self.bgColor, 'door.png', self.angle)
-        self.rect = self.image.get_rect()
-        self.rect.center = getRealLocation(location)
+        super(Door, self).__init__(gameMap, 'door.png', location, angle, visible)
 
 
 class Trap(StaticObject):
     def __init__(self, gameMap, location=(0, 0), angle=0, visible=True):
-        super(Trap, self).__init__(gameMap, location, angle, visible)
-        self.image = StaticObject.getImage(self.bgColor, 'trap.png', self.angle)
-        self.rect = self.image.get_rect()
-        self.rect.center = getRealLocation(location)
+        super(Trap, self).__init__(gameMap, 'trap.png', location, angle, visible)
 
 
 class Arrow(StaticObject):
     def __init__(self, gameMap, location=(0, 0), angle=0, visible=True):
-        super(Arrow, self).__init__(gameMap, location, angle, visible)
-        self.image = StaticObject.getImage(self.bgColor, 'arrow.png', self.angle)
-        self.rect = self.image.get_rect()
-        self.rect.center = getRealLocation(location)
+        super(Arrow, self).__init__(gameMap, 'arrow.png', location, angle, visible)
 
 
 class Key(StaticObject):
     def __init__(self, gameMap, blockIds, location, angle=0, visible=True):
-        super(Key, self).__init__(gameMap, location, angle, visible)
-        self.image = StaticObject.getImage(self.bgColor, 'key.png', self.angle)
-        self.rect = self.image.get_rect()
-        self.rect.center = getRealLocation(location)
+        super(Key, self).__init__(gameMap, 'key.png', location, angle, visible)
 
         self.controlBlocks = set()
 
@@ -273,6 +290,51 @@ class Key(StaticObject):
         return None
 
 
+class Lamp(StaticObject):
+    def __init__(self, gameMap, mosaicIds, location, angle=0, visible=True):
+        super(Lamp, self).__init__(gameMap, 'lamp.png', location, angle, visible)
+
+        self.controlMosaics = set()
+
+        for mosaicId in mosaicIds:
+            self.controlMosaics.add(self.findMosaic(mosaicId))
+
+    def findMosaic(self, mosaicId):
+        for mosaic in self.gameMap.mosaics:
+            if mosaic.Id == mosaicId:
+                return mosaic
+        return None
+
+
+class Mosaic(StaticObject):
+    def __init__(self, gameMap, Id, location=(0, 0), angle=0, visible=True):
+        super(Mosaic, self).__init__(gameMap, 'mosaic.png', location, angle, visible)
+
+        self.Id = Id
+
+    def cover(self, location):
+        return self.rect.collidepoint(getRealLocation(location))
+
+    def disappearCartoon(self):
+        from config.gameConfig import MAP_ROTATE_SPEED
+        import GVar
+
+        self.kill()
+
+        for currentSize in range(self.rect.height, 0, -MAP_ROTATE_SPEED - 2):
+            GVar.globalTimer.tick(FPS_MAIN)
+            self.gameMap.draw(self.gameMap.surface)
+
+            scaledImage = pygame.transform.scale(self.image, (currentSize, currentSize))
+            scaledRect = scaledImage.get_rect()
+            scaledRect.center = self.rect.center
+
+            self.gameMap.surface.blit(scaledImage, scaledRect)
+            pygame.display.update()
+        pass
+
+
+# Block is a little special, so I do not let it be the subclass of StaticObject.
 class Block(pygame.sprite.Sprite):
     UP = 180
     DOWN = 0
@@ -370,6 +432,7 @@ class Block(pygame.sprite.Sprite):
                          self.rotateCenter[1] - math.sin(realAngle) * radius)
             rotateRect = rotatedImage.get_rect()
             rotateRect.center = newCenter
+
             self.gameMap.surface.blit(rotatedImage, rotateRect)
             pygame.display.update()
 

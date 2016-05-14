@@ -11,7 +11,7 @@ import pygame
 from config.gameConfig import CELL_SIZE, allColors, FPS_MAIN, GAME_SCREEN_SIZE
 from shift.utils.basicUtils import hitTestByDistance
 
-from shift.gameObjects.mapObjects import Character, Door, Trap, Arrow, Key, Block
+from shift.gameObjects.mapObjects import Character, Door, Trap, Arrow, Key, Block, Mosaic, Lamp
 import GVar
 
 
@@ -81,10 +81,16 @@ class GameMap:
             for r in levelData.records['K']
         )
 
-        self.mosaics = pygame.sprite.Group()
+        self.mosaics = pygame.sprite.Group(
+            Mosaic(self, Id=r[2], location=r[:2])
+            for r in levelData.records['M']
+        )
 
         # lamps must be initialized after mosaics
-        self.lamps = pygame.sprite.Group()
+        self.lamps = pygame.sprite.Group(
+            Lamp(self, mosaicIds=r[2:], location=r[:2])
+            for r in levelData.records['L']
+        )
 
         self.staticObjects = pygame.sprite.Group(
             self.door, self.arrows, self.keys, self.mosaics, self.lamps, self.traps, self.blocks
@@ -121,7 +127,8 @@ class GameMap:
                pygame.sprite.collide_rect_ratio(0.4)(self.character, self.door)
 
     def lose(self):
-        return pygame.sprite.spritecollideany(self.character, self.traps) is not None
+        return pygame.sprite.spritecollideany(self.character, self.traps,
+                                              collided=lambda s1, s2: hitTestByDistance(s1, s2, 0.5)) is not None
 
     def update(self, command):
         if command == GameMap.allCommands['left']:
@@ -149,25 +156,29 @@ class GameMap:
                 self.rotateCartoon(angle)
                 self.rotateMap(angle)
                 self.character.verticalSpeed = 0  # after rotating, do not jump.
+                # self.character.state //= abs(self.character.state)
 
         # hitKey here.
         hitKey = pygame.sprite.spritecollideany(self.character, self.keys,
-                                                collided=lambda s1, s2: hitTestByDistance(s1, s2, 0.5))
+                                                collided=hitTestByDistance)
         if hitKey is not None:
             for block in hitKey.controlBlocks:
                 block.rotateFromKey()
             hitKey.kill()
 
         # hitLamp here.
-        # todo
-        hitLamp = pygame.sprite.spritecollideany(self.character, self.keys,
-                                                 collided=lambda s1, s2: hitTestByDistance(s1, s2, 0.5))
+        hitLamp = pygame.sprite.spritecollideany(self.character, self.lamps,
+                                                 collided=hitTestByDistance)
         if hitLamp is not None:
+            for mosaic in hitLamp.controlMosaics:
+                mosaic.disappearCartoon()
+                mosaic.kill()
             hitLamp.kill()
 
         if self.win():
             return 1
         elif self.lose():
+            self.character.deathCartoon()
             return -1
 
         return 0
@@ -201,6 +212,9 @@ class GameMap:
         """
         for block in self.blocks:
             if block.cover(location):
+                return True
+        for mosaic in self.mosaics:
+            if mosaic.cover(location):
                 return True
         return False
 

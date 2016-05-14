@@ -301,7 +301,6 @@ class MainGameScreen(MenuScreen):
             elif result == -1:
                 # Lose
                 print('I lose!!!')
-                pygame.time.delay(500)
                 return self.actions['nextGame'](*args)
 
         return self.game.allStates['default']
