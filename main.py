@@ -6,7 +6,6 @@ __author__ = 'fyabc'
 import sys
 
 # Dependent libraries.
-import pygame
 import pygame.locals
 
 # Local modules.
@@ -15,13 +14,6 @@ from shift.utils.loadLevels import loadLevels
 from shift.utils.basicUtils import *
 from shift.screen import *
 import GVar
-
-# Some global variables.
-mainWindow = None
-globalTimer = None
-globalFont = None
-keyMap = None
-unlockedLevelNum = None
 
 
 class Game:

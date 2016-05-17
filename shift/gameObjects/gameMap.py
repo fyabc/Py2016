@@ -12,6 +12,7 @@ from config.gameConfig import CELL_SIZE, allColors, FPS_MAIN, GAME_SCREEN_SIZE
 from shift.utils.basicUtils import hitTestByDistance
 
 from shift.gameObjects.mapObjects import Character, Door, Trap, Arrow, Key, Block, Mosaic, Lamp
+from shift.gameObjects.mapObjects import ShiftGroup
 import GVar
 
 
@@ -60,39 +61,39 @@ class GameMap:
             angle=levelData.records['D'][0][2]
         )
 
-        self.arrows = pygame.sprite.Group(
+        self.arrows = ShiftGroup(
             Arrow(self, location=r[:2], angle=r[2])
             for r in levelData.records['A']
         )
 
-        self.traps = pygame.sprite.Group(*[
+        self.traps = ShiftGroup(*[
             Trap(self, location=r[:2], angle=r[2])
             for r in levelData.records['T']
         ])
 
-        self.blocks = pygame.sprite.Group(*[
+        self.blocks = ShiftGroup(*[
             Block(self, Id=r[4], start=r[:2], length=r[2], angle=r[3])
             for r in levelData.records['B']
         ])
 
         # keys must be initialized after blocks
-        self.keys = pygame.sprite.Group(
+        self.keys = ShiftGroup(
             Key(self, location=r[:2], blockIds=r[2:], angle=0)
             for r in levelData.records['K']
         )
 
-        self.mosaics = pygame.sprite.Group(
+        self.mosaics = ShiftGroup(
             Mosaic(self, Id=r[2], location=r[:2])
             for r in levelData.records['M']
         )
 
         # lamps must be initialized after mosaics
-        self.lamps = pygame.sprite.Group(
+        self.lamps = ShiftGroup(
             Lamp(self, mosaicIds=r[2:], location=r[:2])
             for r in levelData.records['L']
         )
 
-        self.staticObjects = pygame.sprite.Group(
+        self.staticObjects = ShiftGroup(
             self.door, self.arrows, self.keys, self.mosaics, self.lamps, self.traps, self.blocks
         )
 
@@ -162,6 +163,7 @@ class GameMap:
         hitKey = pygame.sprite.spritecollideany(self.character, self.keys,
                                                 collided=hitTestByDistance)
         if hitKey is not None:
+            hitKey.visible = False
             for block in hitKey.controlBlocks:
                 block.rotateFromKey()
             hitKey.kill()
@@ -170,6 +172,7 @@ class GameMap:
         hitLamp = pygame.sprite.spritecollideany(self.character, self.lamps,
                                                  collided=hitTestByDistance)
         if hitLamp is not None:
+            hitLamp.visible = False
             for mosaic in hitLamp.controlMosaics:
                 mosaic.disappearCartoon()
                 mosaic.kill()

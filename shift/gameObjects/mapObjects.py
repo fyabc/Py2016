@@ -10,7 +10,22 @@ from shift.utils.basicUtils import sign, getRealLocation, getLogicLocation, getR
 from shift.gameObjects.gameText import GameText
 
 
-class Character(pygame.sprite.Sprite):
+class ShiftSprite(pygame.sprite.Sprite):
+    """The abstract base class of shift sprites.
+    add draw method and visible property.
+    """
+
+    def __init__(self, visible=False):
+        super(ShiftSprite, self).__init__()
+        self.visible = visible
+
+    def draw(self, surface):
+        # fixme: The pygame.surface.Surface object cannot be copied.
+        if self.visible:
+            surface.blit(self.image, self.rect)
+
+
+class Character(ShiftSprite):
     """the class of the character of the game.
 
         The Character object should be contained in a GameMap object.
@@ -34,7 +49,7 @@ class Character(pygame.sprite.Sprite):
             bgColor : the background color of the character (the logical background)
             location : the initial location of the character (the logical location)
         """
-        super(Character, self).__init__()
+        super(Character, self).__init__(visible)
 
         self.gameMap = gameMap
         self.bgColor = self.gameMap.getCellColor(location)
@@ -42,8 +57,6 @@ class Character(pygame.sprite.Sprite):
         self.image = self.getImage(self.bgColor)
         self.rect = self.image.get_rect()
         self.rect.center = getRealLocation(location)
-
-        self.visible = visible
 
         # self.state : the state of the character that determines the image of character
         # and the speed of character.
@@ -119,11 +132,6 @@ class Character(pygame.sprite.Sprite):
 
     def isQuiet(self):
         return self.verticalSpeed == 0
-
-    def draw(self, surface):
-        # fixme: The pygame.surface.Surface object cannot be copied.
-        if self.visible:
-            surface.blit(self.image, self.rect)
 
     def update(self, FPS=FPS_MAIN):
         if FPS != 0:
@@ -210,31 +218,33 @@ class Character(pygame.sprite.Sprite):
         self.rect.center = getRotateRealCoor(self.rect.center, angle)
 
 
-class StaticObject(pygame.sprite.Sprite):
+class StaticObject(ShiftSprite):
     ImageWhite = {}
     ImageBlack = {}
 
     def __init__(self, gameMap, imageName, location=(0, 0), angle=0, visible=True):
-        super(StaticObject, self).__init__()
+        super(StaticObject, self).__init__(visible)
 
         self.gameMap = gameMap
         self.bgColor = self.gameMap.getCellColor(location)
 
-        self.visible = visible
         self.angle = angle
 
         self.image = StaticObject.getImage(self.bgColor, imageName, self.angle)
 
         self.rect = self.image.get_rect()
 
-        if self.angle == 0:
-            self.rect.midbottom = (CELL_SIZE * location[0] + CELL_SIZE / 2, CELL_SIZE * (location[1] + 1))
-        elif self.angle == 90:
-            self.rect.midright = (CELL_SIZE * (location[0] + 1), CELL_SIZE * location[1] + CELL_SIZE / 2)
-        elif self.angle == 180:
-            self.rect.midtop = (CELL_SIZE * location[0] + CELL_SIZE / 2, CELL_SIZE * location[1])
-        elif self.angle == 270:
-            self.rect.midleft = (CELL_SIZE * location[0], CELL_SIZE * location[1] + CELL_SIZE / 2)
+        if imageName == 'trap.png':
+            if self.angle == 0:
+                self.rect.midbottom = (CELL_SIZE * location[0] + CELL_SIZE / 2, CELL_SIZE * (location[1] + 1))
+            elif self.angle == 90:
+                self.rect.midright = (CELL_SIZE * (location[0] + 1), CELL_SIZE * location[1] + CELL_SIZE / 2)
+            elif self.angle == 180:
+                self.rect.midtop = (CELL_SIZE * location[0] + CELL_SIZE / 2, CELL_SIZE * location[1])
+            elif self.angle == 270:
+                self.rect.midleft = (CELL_SIZE * location[0], CELL_SIZE * location[1] + CELL_SIZE / 2)
+        else:
+            self.rect.center = getRealLocation(location)
 
     @staticmethod
     def getImage(bgColor, imageName, angle=0):
@@ -247,9 +257,6 @@ class StaticObject(pygame.sprite.Sprite):
             if imageName not in Image:
                 Image[imageName] = pygame.image.load(IMAGES_DIR + '/blackBG/' + imageName).convert_alpha()
         return pygame.transform.rotate(Image[imageName], angle).convert_alpha()
-
-    def draw(self, surface):
-        surface.blit(self.image, self.rect)
 
     def rotate(self, angle):
         self.angle = (self.angle + angle) % 360
@@ -331,11 +338,10 @@ class Mosaic(StaticObject):
 
             self.gameMap.surface.blit(scaledImage, scaledRect)
             pygame.display.update()
-        pass
 
 
 # Block is a little special, so I do not let it be the subclass of StaticObject.
-class Block(pygame.sprite.Sprite):
+class Block(ShiftSprite):
     UP = 180
     DOWN = 0
     LEFT = 270
@@ -349,7 +355,7 @@ class Block(pygame.sprite.Sprite):
             Block.Image = pygame.image.load(IMAGES_DIR + '/block.png').convert_alpha()
         return Block.Image
 
-    def __init__(self, gameMap, Id, start, length, angle):
+    def __init__(self, gameMap, Id, start, length, angle, visible=True):
         """A block is like below:
         . . . . . . . .
         . # # * . . . .
@@ -367,7 +373,7 @@ class Block(pygame.sprite.Sprite):
         . . . . . . . .
 
         """
-        super(Block, self).__init__()
+        super(Block, self).__init__(visible)
         self.gameMap = gameMap
         self.Id = Id
 
@@ -457,3 +463,17 @@ class Block(pygame.sprite.Sprite):
         :return: bool, the location is covered or not.
         """
         return self.rect.collidepoint(getRealLocation(location))
+
+
+class ShiftGroup(pygame.sprite.Group):
+    """The Group for this game.
+    Override method draw to call sprites' draw.
+    """
+    def __init__(self, *sprites):
+        super(ShiftGroup, self).__init__(self, *sprites)
+
+    def draw(self, surface):
+        sprites = self.sprites()
+        for spr in sprites:
+            self.spritedict[spr] = spr.draw(surface)
+        self.lostsprites = []

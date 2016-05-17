@@ -1,6 +1,4 @@
-# This file must end with a new line!
-
-# The index starts with 0
+# The index of map starts with 0
 
 # 0 is black, 1 is white.
 
