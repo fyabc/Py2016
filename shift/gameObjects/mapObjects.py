@@ -34,7 +34,7 @@ class Character(ShiftSprite):
     ImageWhite = None
     ImageBlack = None
 
-    HorizontalSpeed = 0.108
+    HorizontalSpeed = 0.116
 
     # [NOTE]:
     # These speeds have been set carefully.
@@ -424,8 +424,7 @@ class Block(ShiftSprite):
         import GVar
         import math
 
-        # remove self from blocks to avoid draw the original block on the surface.
-        self.remove(self.gameMap.staticObjects, self.gameMap.blocks)
+        self.visible = False
 
         for currAngle in range(0, 180, MAP_ROTATE_SPEED):
             GVar.globalTimer.tick(FPS_MAIN)
@@ -447,8 +446,7 @@ class Block(ShiftSprite):
         self.rect = self.image.get_rect()
         self.setRect()
 
-        # add back.
-        self.add(self.gameMap.staticObjects, self.gameMap.blocks)
+        self.visible = True
 
     def rotate(self, angle):
         self.angle = (self.angle + angle) % 360
@@ -471,6 +469,9 @@ class ShiftGroup(pygame.sprite.Group):
     """
     def __init__(self, *sprites):
         super(ShiftGroup, self).__init__(self, *sprites)
+
+    def __iter__(self):
+        return super(ShiftGroup, self).__iter__()
 
     def draw(self, surface):
         sprites = self.sprites()

@@ -10,6 +10,7 @@ import pygame
 # Local modules.
 from config.gameConfig import CELL_SIZE, allColors, FPS_MAIN, GAME_SCREEN_SIZE
 from shift.utils.basicUtils import hitTestByDistance
+from shift.utils.timer import ShiftTimer
 
 from shift.gameObjects.mapObjects import Character, Door, Trap, Arrow, Key, Block, Mosaic, Lamp
 from shift.gameObjects.mapObjects import ShiftGroup
@@ -96,6 +97,9 @@ class GameMap:
         self.staticObjects = ShiftGroup(
             self.door, self.arrows, self.keys, self.mosaics, self.lamps, self.traps, self.blocks
         )
+
+        # Start the timer of this game.
+        self.timer = ShiftTimer()
 
     def getRotateCoordinate(self, coordinate, angle):
         if angle == 0:
