@@ -34,7 +34,7 @@ class Character(ShiftSprite):
     ImageWhite = None
     ImageBlack = None
 
-    HorizontalSpeed = 0.116
+    HorizontalSpeed = 0.118
 
     # [NOTE]:
     # These speeds have been set carefully.
@@ -344,12 +344,14 @@ class GameText(StaticObject):
     """The text in the game.
     Note: This class is different from MenuText.
     """
+    FONT_SIZE = 19
+
     @staticmethod
     def getImage(bgColor, text, angle=0):
         if bgColor is True:
-            Image = getFont(20).render(text, True, allColors['black'], allColors['white'])
+            Image = getFont(GameText.FONT_SIZE).render(text, True, allColors['black'], allColors['white'])
         else:
-            Image = getFont(20).render(text, True, allColors['white'], allColors['black'])
+            Image = getFont(GameText.FONT_SIZE).render(text, True, allColors['white'], allColors['black'])
         return pygame.transform.rotate(Image, angle).convert_alpha()
 
     def __init__(self, gameMap, text, location=(0, 0), angle=0, visible=True):
@@ -473,20 +475,3 @@ class Block(ShiftSprite):
 
     def cover(self, location):
         return self.rect.collidepoint(getRealLocation(location))
-
-
-class ShiftGroup(pygame.sprite.Group):
-    """The Group for this game.
-    Override method draw to call sprites' draw.
-    """
-    def __init__(self, *sprites):
-        super(ShiftGroup, self).__init__(self, *sprites)
-
-    def __iter__(self):
-        return super(ShiftGroup, self).__iter__()
-
-    def draw(self, surface):
-        sprites = self.sprites()
-        for spr in sprites:
-            self.spritedict[spr] = spr.draw(surface)
-        self.lostsprites = []

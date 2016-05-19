@@ -13,7 +13,7 @@ from shift.utils.basicUtils import hitTestByDistance
 from shift.utils.timer import ShiftTimer
 
 from shift.gameObjects.mapObjects import Character, Door, Trap, Arrow, Key, Block, Mosaic, Lamp, GameText
-from shift.gameObjects.mapObjects import ShiftGroup
+from shift.gameObjects.mapGroups import ShiftGroup
 import GVar
 
 
@@ -100,7 +100,7 @@ class GameMap:
         )
 
         self.staticObjects = ShiftGroup(
-            self.door, self.arrows, self.keys, self.mosaics, self.lamps, self.traps, self.blocks, self.texts
+            self.texts, self.door, self.arrows, self.keys, self.mosaics, self.lamps, self.traps, self.blocks,
         )
 
         # Start the timer of this game.
@@ -127,10 +127,6 @@ class GameMap:
                              pygame.Rect(w * CELL_SIZE, h * CELL_SIZE, CELL_SIZE, CELL_SIZE)
                              )
         self.staticObjects.draw(surface)
-
-        # # show timer here.
-        # text = GVar.globalFont.render("%d" % int(self.timer.get_time()), True, allColors['violet'])
-        # self.surface.blit(text, text.get_rect())
 
     def draw(self, surface):
         self.drawBackground(surface)
@@ -167,7 +163,7 @@ class GameMap:
 
         # hitArrow here.
         hitArrow = pygame.sprite.spritecollideany(self.character, self.arrows,
-                                                  collided=hitTestByDistance)
+                                                  collided=lambda s1, s2: hitTestByDistance(s1, s2, 0.4))
         if hitArrow is not None:
             angle = -hitArrow.angle % 360
             if angle != 0:
@@ -178,7 +174,7 @@ class GameMap:
 
         # hitKey here.
         hitKey = pygame.sprite.spritecollideany(self.character, self.keys,
-                                                collided=hitTestByDistance)
+                                                collided=lambda s1, s2: hitTestByDistance(s1, s2, 0.55))
         if hitKey is not None:
             hitKey.visible = False
             for block in hitKey.controlBlocks:
@@ -187,7 +183,7 @@ class GameMap:
 
         # hitLamp here.
         hitLamp = pygame.sprite.spritecollideany(self.character, self.lamps,
-                                                 collided=hitTestByDistance)
+                                                 collided=lambda s1, s2: hitTestByDistance(s1, s2, 0.55))
         if hitLamp is not None:
             hitLamp.visible = False
             for mosaic in hitLamp.controlMosaics:
