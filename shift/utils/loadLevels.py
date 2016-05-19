@@ -14,14 +14,15 @@ class LevelData:
         self.rowNum = rowNum
         self.matrix = [[None for _ in range(rowNum)] for _ in range(rowNum)]
         self.records = {
-            'S': [],  # Start
-            'D': [],  # Door
-            'A': [],  # Arrow
-            'T': [],  # Trap
-            'K': [],  # Key
-            'L': [],  # Lamp
-            'B': [],  # Block
-            'M': [],  # Mosaic
+            'S': [],        # Start
+            'D': [],        # Door
+            'A': [],        # Arrow
+            'T': [],        # Trap
+            'K': [],        # Key
+            'L': [],        # Lamp
+            'B': [],        # Block
+            'M': [],        # Mosaic
+            'Text': [],     # Text
         }
 
     def getLine(self, line, lineNum):
@@ -29,7 +30,10 @@ class LevelData:
             self.matrix[lineNum][i] = bool(int(line[i]))
 
     def addRecord(self, record):
-        self.records[record[0]].append([int(record[i]) for i in range(1, len(record))])
+        if record[0] == 'Text':
+            self.records[record[0]].append([int(record[i]) for i in range(1, 4)] + [' '.join(record[4:])])
+        else:
+            self.records[record[0]].append([int(record[i]) for i in range(1, len(record))])
 
 
 def lineStripComment(line, commentStr='#'):

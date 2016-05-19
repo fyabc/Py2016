@@ -9,14 +9,15 @@
 
 # Samples:
 #
-# S 0 5             # S = start
-# D 11 5 0          # D = destination, the 3rd number is the direction, 0 is DOWN, 90 is RIGHT, 180 is UP, 270 is LEFT.
-# T 3 11 0          # T = trap, if the direction is 180, it means the trap is like 'VVV'.
-# A 11 11 180       # A = arrow.
-# K 0 6 0 1 2 3     # K = key, the 3rd and more number is id of blocks.
-# B 8 11 1 0 0      # B = block, the 1st & 2nd number is start location, the 3rd is length, the 4th is direction, the 5th is id.
-# L 6 5 0 1 2 3 4   # L = lamp, the 3rd and more number is id of mosaics.
-# M 6 6 0           # M = mosaic, the 3rd number is id.
+# S 0 5                     # S = start
+# D 11 5 0                  # D = destination, the 3rd number is the direction, 0 is DOWN, 90 is RIGHT, 180 is UP, 270 is LEFT.
+# T 3 11 0                  # T = trap, if the direction is 180, it means the trap is like 'VVV'.
+# A 11 11 180               # A = arrow.
+# K 0 6 0 1 2 3             # K = key, the 3rd and more number is id of blocks.
+# B 8 11 1 0 0              # B = block, the 1st & 2nd number is start location, the 3rd is length, the 4th is direction, the 5th is id.
+# L 6 5 0 1 2 3 4           # L = lamp, the 3rd and more number is id of mosaics.
+# M 6 6 0                   # M = mosaic, the 3rd number is id.
+# Text 3 5 180 Hello world! # Text = text, the 1st & 2nd number is center location, the 3rd is angle, others are text.
 
 begin # 1 (how to run)
 
@@ -37,6 +38,8 @@ begin # 1 (how to run)
 
 S 0 5
 D 11 5 0
+Text 5 2 0 Hello world!
+Text 5 9 180 Hello world!
 
 end
 

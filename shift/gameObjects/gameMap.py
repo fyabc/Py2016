@@ -12,7 +12,7 @@ from config.gameConfig import CELL_SIZE, allColors, FPS_MAIN, GAME_SCREEN_SIZE
 from shift.utils.basicUtils import hitTestByDistance
 from shift.utils.timer import ShiftTimer
 
-from shift.gameObjects.mapObjects import Character, Door, Trap, Arrow, Key, Block, Mosaic, Lamp
+from shift.gameObjects.mapObjects import Character, Door, Trap, Arrow, Key, Block, Mosaic, Lamp, GameText
 from shift.gameObjects.mapObjects import ShiftGroup
 import GVar
 
@@ -94,8 +94,13 @@ class GameMap:
             for r in levelData.records['L']
         )
 
+        self.texts = ShiftGroup(
+            GameText(self, text=r[3], location=r[:2], angle=r[2])
+            for r in levelData.records['Text']
+        )
+
         self.staticObjects = ShiftGroup(
-            self.door, self.arrows, self.keys, self.mosaics, self.lamps, self.traps, self.blocks
+            self.door, self.arrows, self.keys, self.mosaics, self.lamps, self.traps, self.blocks, self.texts
         )
 
         # Start the timer of this game.
@@ -123,6 +128,10 @@ class GameMap:
                              )
         self.staticObjects.draw(surface)
 
+        # # show timer here.
+        # text = GVar.globalFont.render("%d" % int(self.timer.get_time()), True, allColors['violet'])
+        # self.surface.blit(text, text.get_rect())
+
     def draw(self, surface):
         self.drawBackground(surface)
         self.character.draw(surface)
@@ -136,6 +145,10 @@ class GameMap:
                                               collided=lambda s1, s2: hitTestByDistance(s1, s2, 0.5)) is not None
 
     def update(self, command):
+        """Update the GameMap,
+        such as change the location of character, handle hit objects, etc.
+        Note: This method does NOT call pygame.display.update.
+        """
         if command == GameMap.allCommands['left']:
             self.character.toLeft()
         elif command == GameMap.allCommands['right']:

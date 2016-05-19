@@ -13,7 +13,7 @@ import GVar
 
 from shift.gameObjects.gameMap import GameMap
 from shift.gameObjects.shiftButton import ShiftTextButton, ShiftButtonPool
-from shift.gameObjects.gameText import GameText
+from shift.gameObjects.menuText import MenuText
 from shift.utils.basicUtils import getKeyName, getFont
 
 
@@ -126,8 +126,8 @@ class StartGameScreen(MenuScreen):
         super(StartGameScreen, self).__init__(game, GVar.mainWindow)
 
         self.addInactiveThings(
-            GameText('Sh', (0.43, 0.2), 60),
-            GameText('ift', (0.57, 0.2), 60, allColors['white']),
+            MenuText('Sh', (0.43, 0.2), 60),
+            MenuText('ift', (0.57, 0.2), 60, allColors['white']),
         )
 
         # some special actions
@@ -170,11 +170,11 @@ class HelpScreen(MenuScreen):
         returnButton = ShiftTextButton('Return to main menu(Q)', (0.5, 0.85), font=getFont(25))
 
         self.addInactiveThings(
-            GameText('Help', (0.5, 0.2), 50),
-            GameText('Left : run left', (0.5, 0.35), 20),
-            GameText('Right : run right', (0.5, 0.45), 20),
-            GameText('Space : jump', (0.5, 0.55), 20),
-            GameText('Shift : shift to another world', (0.5, 0.65), 20),
+            MenuText('Help', (0.5, 0.2), 50),
+            MenuText('Left : run left', (0.5, 0.35), 20),
+            MenuText('Right : run right', (0.5, 0.45), 20),
+            MenuText('Space : jump', (0.5, 0.55), 20),
+            MenuText('Shift : shift to another world', (0.5, 0.65), 20),
         )
 
         self.actions['quit'] = lambda *args: args[0]
@@ -190,7 +190,7 @@ class MainMenuScreen(MenuScreen):
         self.actions['help'] = lambda *args: self.game.allStates['helpScreen']
 
         self.addInactiveThings(
-            GameText('Choose a level', (0.5, 0.13), 60, allColors['white'])
+            MenuText('Choose a level', (0.5, 0.13), 60, allColors['white'])
         )
 
         columnNum = 5

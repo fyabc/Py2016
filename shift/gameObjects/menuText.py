@@ -9,8 +9,8 @@ from config.gameConfig import *
 from shift.utils.basicUtils import invertColor
 
 
-class GameText:
-    """A help class for text string of game.
+class MenuText:
+    """A help class for text string of menu screens.
     """
 
     def __init__(self, text='', location=(0.5, 0.5), fontSize=40,
