@@ -25,7 +25,6 @@ class ShiftTimer:
     speed = 1
 
     def __init__(self):
-        # self.startTime = time.time()
         self.lastGameTime = 0
         self.lastTickTime = 0
         self.lastRealTime = time.time()
@@ -34,14 +33,14 @@ class ShiftTimer:
     # Set the rate at which this clock ticks relative to the real clock
     def set_speed(self, n):
         assert (n >= 0)
-        self.lastGameTime = self.get_time()
+        self.lastGameTime = self.getTime()
         self.lastRealTime = time.time()
         self.speed = n
 
     # Pause the clock
     def pause(self):
         if not self.paused:
-            self.lastGameTime = self.get_time()
+            self.lastGameTime = self.getTime()
             self.lastRealTime = time.time()
             self.paused = True
 
@@ -52,7 +51,7 @@ class ShiftTimer:
             self.lastRealTime = time.time()
 
     def tick(self, fps=0):
-        tm = self.get_time()
+        tm = self.getTime()
         dt = tm - self.lastTickTime
         if fps > 0:
             minTime = 1.0 / fps
@@ -64,10 +63,10 @@ class ShiftTimer:
 
     # Returns the amount of 'game time' that has passed since creating
     # the clock (paused time does not count).
-    def get_time(self):
+    def getTime(self):
         if self.paused:
             return self.lastGameTime
         return self.speed * (time.time() - self.lastRealTime) + self.lastGameTime
 
-    def get_real_time(self):
+    def getRealTime(self):
         return time.time() - self.startTime

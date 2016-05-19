@@ -19,9 +19,11 @@
 # M 6 6 0                   # M = mosaic, the 3rd number is id.
 # Text 3 5 180 Hello world! # Text = text, the 1st & 2nd number is center location, the 3rd is angle, others are text.
 
-begin # 1 (how to run)
+################# BEGIN #################
 
-12
+12 # The map size must be given at first.
+
+begin # 1 (how to run)
 
 1 1 1 1 1 1 1 1 1 1 1 1
 1 1 1 1 1 1 1 1 1 1 1 1
@@ -45,8 +47,6 @@ Text 5 3 0 Press Left and Right to move.
 end
 
 begin # 2 (how to jump)
-
-12
 
 1 1 1 1 1 1 1 1 1 1 1 1
 1 1 1 1 1 1 1 1 1 1 1 1
@@ -75,8 +75,6 @@ end
 
 begin # 3 (how to shift)
 
-12
-
 1 1 1 1 1 1 1 1 1 1 1 1
 1 1 1 1 1 0 0 1 1 1 1 1
 1 1 1 1 1 0 0 1 1 1 1 1
@@ -103,8 +101,6 @@ Text 5 9 180 ...unless you press the Shift.
 end
 
 begin # 4 (key & block)
-
-12
 
 1 1 1 1 1 1 1 1 1 1 1 1
 1 1 1 1 1 1 1 1 1 1 1 1
@@ -138,8 +134,6 @@ end
 
 begin # 5 (arrow)
 
-12
-
 0 0 1 1 1 1 1 1 1 1 1 1
 0 0 1 1 1 1 1 1 1 1 1 1
 0 1 1 1 1 1 1 1 0 0 0 0
@@ -162,13 +156,11 @@ A 0 9 180
 A 1 0 90
 A 2 0 90
 
-Text 5 2 0 Don't be dizzy.
+Text 6 3 0 The gravity in Shift world is easy to be changed.
 
 end
 
 begin # 6 (lamp & mosaic)
-
-12
 
 1 1 1 1 1 1 1 1 1 1 1 1
 1 1 1 1 1 1 1 1 1 1 1 1
@@ -214,8 +206,6 @@ end
 
 begin
 
-12
-
 1 1 1 1 1 1 1 1 1 1 1 1
 1 1 1 1 1 1 1 1 1 1 1 1
 1 1 1 1 1 1 1 1 1 1 1 1
@@ -245,8 +235,6 @@ end
 
 begin
 
-12
-
 1 0 1 0 0 0 0 0 0 0 0 0
 0 1 1 1 0 1 0 0 0 0 0 0
 0 0 1 0 1 1 1 0 1 0 0 0
@@ -268,4 +256,8 @@ A 1 4 0
 A 11 9 0
 A 8 11 180
 
+Text 8 0 0 Don't be dizzy!
+
 end
+
+################# END #################

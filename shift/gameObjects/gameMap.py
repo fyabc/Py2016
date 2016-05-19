@@ -159,6 +159,9 @@ class GameMap:
             if self.character.canShift():
                 self.shiftMap()
 
+        # Then special events below.
+
+        # update the character here.
         self.character.update()
 
         # hitArrow here.
@@ -248,14 +251,13 @@ class GameMap:
 
         self.rotateCartoon(180)
         self.rotateMap(180)
+        self.character.toStop()  # after shifting, do not move.
 
         # reset the image after rotating
         self.character.image = pygame.transform.flip(self.character.image, False, True)
 
     def rotateMap(self, angle):
         """rotate the logic structure of the map.
-        :param angle: the angle of rotate.
-        :return: no return.
         """
         newMatrix = [[None for _ in range(self.rowNum)] for _ in range(self.rowNum)]
         for y in range(self.rowNum):

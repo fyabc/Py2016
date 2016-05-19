@@ -27,13 +27,10 @@ class ShiftSprite(pygame.sprite.Sprite):
 
 class Character(ShiftSprite):
     """the class of the character of the game.
-
-        The Character object should be contained in a GameMap object.
+    The Character object should be contained in a GameMap object.
     """
 
-    ImageWhite = None
-    ImageBlack = None
-
+    ImageWhite, ImageBlack = None, None
     HorizontalSpeed = 0.118
 
     # [NOTE]:
@@ -210,6 +207,12 @@ class Character(ShiftSprite):
         if self.state > 0:
             self.state = +1
 
+    def toStop(self):
+        if self.state < 0:
+            self.state = -1
+        else:
+            self.state = +1
+
     def toJump(self):
         if self.verticalSpeed == 0:
             self.verticalSpeed = self.InitJumpSpeed
@@ -219,8 +222,7 @@ class Character(ShiftSprite):
 
 
 class StaticObject(ShiftSprite):
-    ImageWhite = {}
-    ImageBlack = {}
+    ImageWhite, ImageBlack = {}, {}
 
     def __init__(self, gameMap, imageName, location=(0, 0), angle=0, visible=True):
         super(StaticObject, self).__init__(visible)
@@ -360,11 +362,7 @@ class GameText(StaticObject):
 
 # Block is a little special, so I do not let it be the subclass of StaticObject.
 class Block(ShiftSprite):
-    UP = 180
-    DOWN = 0
-    LEFT = 270
-    RIGHT = 90
-
+    UP, DOWN, LEFT, RIGHT = 180, 0, 270, 90
     Image = None
 
     @staticmethod

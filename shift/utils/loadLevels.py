@@ -57,14 +57,17 @@ def loadLevels(levelsFileName='basic.txt', levelsFolderName=LEVELS_DIR):
     levelMap = []
 
     index = 0
+
+    # read map size.
+    mapSize = int(allLines[index])
+    index += 1
+
     while index < len(allLines):
         index += 1  # parse 'begin'
-        rowNum = int(allLines[index])
-        index += 1
 
-        levelMap.append(LevelData(rowNum))
+        levelMap.append(LevelData(mapSize))
 
-        for i in range(rowNum):
+        for i in range(mapSize):
             line = allLines[index].split()
             levelMap[levelNum].getLine(line, i)
             index += 1

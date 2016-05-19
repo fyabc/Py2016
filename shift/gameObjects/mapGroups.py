@@ -13,7 +13,8 @@ class ShiftGroup(pygame.sprite.Group):
         # so that the sprites will be drawn in the order when they were added.
         from collections import OrderedDict
         self.spritedict = OrderedDict()
-        super(ShiftGroup, self).__init__(self, *sprites)
+        self.lostsprites = []
+        self.add(*sprites)
 
     def add(self, *sprites):
         super(ShiftGroup, self).add(*sprites)
