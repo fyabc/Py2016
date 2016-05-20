@@ -283,8 +283,7 @@ class MainGameScreen(MenuScreen):
             pygame.display.update()
 
             # Test results.
-            if result == 1:
-                # Win
+            if result == 1:     # Win
                 print('I win!!!')
                 pygame.time.delay(500)
                 if GVar.currentLevelNum < GVar.unlockedLevelNum:
@@ -298,8 +297,7 @@ class MainGameScreen(MenuScreen):
                     else:
                         print('I have completed all levels!!!')
                         return self.actions['quit'](*args)
-            elif result == -1:
-                # Lose
+            elif result == -1:  # Lose
                 print('I lose!!!')
                 return self.actions['nextGame'](*args)
 

@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 __author__ = 'fyabc'
 
+# Standard libraries.
+from collections import defaultdict
+
 # Local libraries.
 from config.gameConfig import LEVELS_DIR
 
@@ -8,22 +11,24 @@ from config.gameConfig import LEVELS_DIR
 class LevelData:
     """the class to store level data from file and then be copied to GameMap.
         I use this class because the pygame.surface.Surface cannot be copied.
+
+        record types:
+        [matrix] the 0-1 matrix.
+        'S':    Start
+        'D':    Door
+        'A':    Arrow
+        'T':    Trap
+        'K':    Key
+        'L':    Lamp
+        'B':    Block
+        'M':    Mosaic
+        'Text': Text
     """
 
     def __init__(self, rowNum):
         self.rowNum = rowNum
         self.matrix = [[None for _ in range(rowNum)] for _ in range(rowNum)]
-        self.records = {
-            'S': [],        # Start
-            'D': [],        # Door
-            'A': [],        # Arrow
-            'T': [],        # Trap
-            'K': [],        # Key
-            'L': [],        # Lamp
-            'B': [],        # Block
-            'M': [],        # Mosaic
-            'Text': [],     # Text
-        }
+        self.records = defaultdict(list)
 
     def getLine(self, line, lineNum):
         for i in range(len(line)):
@@ -48,10 +53,7 @@ def loadLevels(levelsFileName='basic.txt', levelsFolderName=LEVELS_DIR):
 
     levelsFile.close()
 
-    allLines = [
-        lineStripComment(line)
-        for line in allLines if len(lineStripComment(line)) > 0
-    ]
+    allLines = [lineStripComment(line) for line in allLines if len(lineStripComment(line)) > 0]
 
     levelNum = 0
     levelMap = []

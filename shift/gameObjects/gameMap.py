@@ -3,6 +3,7 @@ __author__ = 'fyabc'
 
 # Standard libraries.
 from copy import deepcopy
+from functools import partial
 
 # Dependent libraries.
 import pygame
@@ -33,9 +34,12 @@ class GameMap:
         self.character : a Sprite of game character
         self.door : a Sprite of game destination(a door)
         self.rotateArrows : a list of Sprites of rotate Arrows
-        self.keys : a list of Sprites of keys and blocks
-        self.lamps : a list of Sprites of lamps and mosaics
         self.traps : a list of Sprites of traps
+        self.keys : a list of Sprites of keys and blocks
+        self.blocks :
+        self.lamps : a list of Sprites of lamps and mosaics
+        self.mosaics :
+        self.texts :
     """
 
     allCommands = {
@@ -138,7 +142,7 @@ class GameMap:
 
     def lose(self):
         return pygame.sprite.spritecollideany(self.character, self.traps,
-                                              collided=lambda s1, s2: hitTestByDistance(s1, s2, 0.5)) is not None
+                                              collided=partial(hitTestByDistance, ratio=0.5)) is not None
 
     def update(self, command):
         """Update the GameMap,
@@ -166,18 +170,18 @@ class GameMap:
 
         # hitArrow here.
         hitArrow = pygame.sprite.spritecollideany(self.character, self.arrows,
-                                                  collided=lambda s1, s2: hitTestByDistance(s1, s2, 0.4))
+                                                  collided=partial(hitTestByDistance, ratio=0.4))
         if hitArrow is not None:
             angle = -hitArrow.angle % 360
             if angle != 0:
                 self.rotateCartoon(angle)
                 self.rotateMap(angle)
                 self.character.verticalSpeed = 0  # after rotating, do not jump.
-                # self.character.state //= abs(self.character.state)
+                # self.character.toStop()
 
         # hitKey here.
         hitKey = pygame.sprite.spritecollideany(self.character, self.keys,
-                                                collided=lambda s1, s2: hitTestByDistance(s1, s2, 0.55))
+                                                collided=partial(hitTestByDistance, ratio=0.55))
         if hitKey is not None:
             hitKey.visible = False
             for block in hitKey.controlBlocks:
@@ -186,7 +190,7 @@ class GameMap:
 
         # hitLamp here.
         hitLamp = pygame.sprite.spritecollideany(self.character, self.lamps,
-                                                 collided=lambda s1, s2: hitTestByDistance(s1, s2, 0.55))
+                                                 collided=partial(hitTestByDistance, ratio=0.55))
         if hitLamp is not None:
             hitLamp.visible = False
             for mosaic in hitLamp.controlMosaics:
