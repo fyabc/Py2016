@@ -13,6 +13,7 @@ from config.gameConfig import *
 from shift.utils.loadLevels import loadLevels
 from shift.utils.basicUtils import *
 from shift.screen import *
+from shift.editor.editorScreen import EditorScreen
 import GVar
 
 
@@ -30,6 +31,7 @@ class Game:
         'mainGame': 4,
         'aboutScreen': 5,
         'pauseMenuScreen': 6,
+        'editorScreen': 7,
     }
 
     def __init__(self):
@@ -60,6 +62,7 @@ def main():
     game.registerScreen('helpScreen', HelpScreen(game))
     game.registerScreen('mainMenuScreen', MainMenuScreen(game))
     game.registerScreen('mainGame', MainGameScreen(game))
+    game.registerScreen('editorScreen', EditorScreen(game))
 
     game.run()
 

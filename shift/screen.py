@@ -126,8 +126,8 @@ class StartGameScreen(MenuScreen):
         super(StartGameScreen, self).__init__(game, GVar.mainWindow)
 
         self.addInactiveThings(
-            MenuText('Sh', (0.43, 0.2), 60),
-            MenuText('ift', (0.57, 0.2), 60, allColors['white']),
+            MenuText('Sh', (0.43, 0.14), 57),
+            MenuText('ift', (0.57, 0.14), 57, allColors['white']),
         )
 
         # some special actions
@@ -147,19 +147,22 @@ class StartGameScreen(MenuScreen):
         self.actions['continue'] = lambda *args: self.game.allStates['mainMenuScreen']
         self.actions['help'] = lambda *args: self.game.allStates['helpScreen']
         self.actions['quit'] = lambda *args: self.game.allStates['esc']
+        self.actions['editor'] = lambda *args: self.game.allStates['editorScreen']
         self.actions['github'] = __openGitHub
 
-        newGameButton = ShiftTextButton('New Game(N)', (0.25, 0.4))
-        continueButton = ShiftTextButton('Continue(C)', (0.75, 0.4))
-        helpButton = ShiftTextButton('Help(H)', (0.25, 0.65))
-        quitButton = ShiftTextButton('Quit(Q)', (0.75, 0.65))
-        githubButton = ShiftTextButton('Author: fyabc<www.github.com/fyabc>', (0.5, 0.85), font=getFont(18))
+        newGameButton = ShiftTextButton('New Game(N)', (0.25, 0.31))
+        continueButton = ShiftTextButton('Continue(C)', (0.75, 0.31))
+        editorButton = ShiftTextButton('Edit(E)', (0.25, 0.51))
+        helpButton = ShiftTextButton('Help(H)', (0.75, 0.51))
+        quitButton = ShiftTextButton('Quit(Q)', (0.25, 0.71))
+        githubButton = ShiftTextButton('Author: fyabc<www.github.com/fyabc>', (0.5, 0.9), font=getFont(18))
 
         # add buttons to group
         self.addButtonAndAction(newGameButton, self.actions['newGame'])
         self.addButtonAndAction(continueButton, self.actions['continue'])
         self.addButtonAndAction(helpButton, self.actions['help'])
         self.addButtonAndAction(quitButton, self.actions['quit'])
+        self.addButtonAndAction(editorButton, self.actions['editor'])
         self.addButtonAndAction(githubButton, self.actions['github'])
 
 

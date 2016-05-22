@@ -13,6 +13,7 @@ continue    c
 about       a
 # pause     p
 restart     r
+edit        e
 
 # left      a
 # right     d
