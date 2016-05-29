@@ -18,4 +18,4 @@ class EditorScreen(MenuScreen):
         self.actions['quit'] = lambda *args: self.game.allStates['startGameScreen']
 
     def run(self, *args):
-        super(EditorScreen, self).run(*args)
+        return super(EditorScreen, self).run(*args)
