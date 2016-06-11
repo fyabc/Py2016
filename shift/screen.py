@@ -138,7 +138,7 @@ class StartGameScreen(MenuScreen):
 
         def __openGitHub(*args):
             import webbrowser
-            webbrowser.open('github.com/fyabc/Py2016')
+            webbrowser.open('http://github.com/fyabc/Py2016')
             return self.game.allStates['startGameScreen']
 
         # register actions
