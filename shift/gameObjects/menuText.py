@@ -14,7 +14,7 @@ class MenuText:
     """
 
     def __init__(self, text='', location=(0.5, 0.5), fontSize=40,
-                 fgColor=allColors['black'], bgColor=None,
+                 fgColor=AllColors['black'], bgColor=None,
                  fontName=FONT_NAME):
         """
         :param text:

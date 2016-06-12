@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 __author__ = 'fyabc'
 
+# Standard libraries.
+from os.path import dirname
+
 # Dependent libraries.
-from pygame.color import THECOLORS as allColors
+from pygame.color import THECOLORS as AllColors
 
 GAME_NAME = 'Shift'
 
@@ -21,12 +24,15 @@ CELL_SIZE = 50  # The size of a cell.
 
 assert GAME_SCREEN_SIZE[0] % CELL_SIZE == 0 and GAME_SCREEN_SIZE[1] % CELL_SIZE == 0
 
-BACKGROUND_COLOR = allColors['white']
+BACKGROUND_COLOR = AllColors['white']
 
-LEVELS_DIR = 'data/levels'
-IMAGES_DIR = 'data/images'
+ROOT_DIR = dirname(dirname(__file__))
 
-RECORD_FILE_NAME = 'data/record.txt'
+LEVELS_DIR = ROOT_DIR + '/data/levels'
+IMAGES_DIR = ROOT_DIR + '/data/images'
+KEYMAP_DIR = ROOT_DIR + '/config/keymap.txt'
+
+RECORD_FILE_NAME = ROOT_DIR + '/data/record.txt'
 
 USE_SYSTEM_FONT = False
 
@@ -41,7 +47,7 @@ if USE_SYSTEM_FONT:
     # # set this to get system default font.
     # FONT_NAME = None
 else:
-    FONT_NAME = 'data/consolas-yahei.ttf'
+    FONT_NAME = ROOT_DIR + '/data/consolas-yahei.ttf'
 
 # Game Show Configs.
 MAP_ROTATE_SPEED = 3

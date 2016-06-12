@@ -5,7 +5,7 @@ __author__ = 'fyabc'
 import pygame
 
 # Local modules.
-from config.gameConfig import allColors, GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT
+from config.gameConfig import AllColors, GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT
 from shift.utils.basicUtils import getFont, invertColor
 
 
@@ -17,7 +17,7 @@ class ShiftTextButton(pygame.sprite.Sprite):
     """
 
     def __init__(self, text='', position=(0, 0),
-                 color=allColors['white'], textColor=allColors['black'], font=None):
+                 color=AllColors['white'], textColor=AllColors['black'], font=None):
         """create a new ShiftTextButton
 
             the size of button is determined by its text.

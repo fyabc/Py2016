@@ -8,7 +8,7 @@ import pygame
 import pygame.locals
 
 # Local modules.
-from config.gameConfig import FPS_MAIN, BACKGROUND_COLOR, allColors
+from config.gameConfig import FPS_MAIN, BACKGROUND_COLOR, AllColors
 import GVar
 
 from shift.gameObjects.gameMap import GameMap
@@ -127,7 +127,7 @@ class StartGameScreen(MenuScreen):
 
         self.addInactiveThings(
             MenuText('Sh', (0.43, 0.14), 57),
-            MenuText('ift', (0.57, 0.14), 57, allColors['white']),
+            MenuText('ift', (0.57, 0.14), 57, AllColors['white']),
         )
 
         # some special actions
@@ -193,7 +193,7 @@ class MainMenuScreen(MenuScreen):
         self.actions['help'] = lambda *args: self.game.allStates['helpScreen']
 
         self.addInactiveThings(
-            MenuText('Choose a level', (0.5, 0.13), 60, allColors['white'])
+            MenuText('Choose a level', (0.5, 0.13), 60, AllColors['white'])
         )
 
         columnNum = 5
@@ -243,7 +243,7 @@ class MainGameScreen(MenuScreen):
         self.actions['help'] = lambda *args: self.game.allStates['helpScreen']
 
     def run(self, *args):
-        self.surface.fill(allColors['white'])
+        self.surface.fill(AllColors['white'])
 
         gameMap = GameMap(GVar.levelsData[GVar.currentLevelNum - 1], self.surface)
 

@@ -5,7 +5,7 @@ __author__ = 'fyabc'
 import pygame
 
 # Local modules.
-from config.gameConfig import CELL_SIZE, GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT, IMAGES_DIR, FPS_MAIN, allColors
+from config.gameConfig import CELL_SIZE, GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT, IMAGES_DIR, FPS_MAIN, AllColors
 from shift.utils.basicUtils import sign, getRealLocation, getLogicLocation, getRotateRealCoor, getFont
 from shift.gameObjects.menuText import MenuText
 
@@ -181,7 +181,7 @@ class Character(ShiftSprite):
         self.gameMap.draw(self.gameMap.surface)
 
         deathImage = pygame.image.load(IMAGES_DIR + '/death_character.png').convert_alpha()
-        deathMessage = MenuText(' You lose! ', (0.5, 0.3), 30, allColors['red'], allColors['white'])
+        deathMessage = MenuText(' You lose! ', (0.5, 0.3), 30, AllColors['red'], AllColors['white'])
 
         self.gameMap.surface.blit(deathImage, self.rect)
         deathMessage.draw(self.gameMap.surface)
@@ -351,9 +351,9 @@ class GameText(StaticObject):
     @staticmethod
     def getImage(bgColor, text, angle=0):
         if bgColor is True:
-            Image = getFont(GameText.FONT_SIZE).render(text, True, allColors['black'], allColors['white'])
+            Image = getFont(GameText.FONT_SIZE).render(text, True, AllColors['black'], AllColors['white'])
         else:
-            Image = getFont(GameText.FONT_SIZE).render(text, True, allColors['white'], allColors['black'])
+            Image = getFont(GameText.FONT_SIZE).render(text, True, AllColors['white'], AllColors['black'])
         return pygame.transform.rotate(Image, angle).convert_alpha()
 
     def __init__(self, gameMap, text, location=(0, 0), angle=0, visible=True):
@@ -397,8 +397,8 @@ class Block(ShiftSprite):
 
         # draw block.
         LINE_WIDTH = 2
-        pygame.draw.rect(self.image, allColors['black'], (0, 0, 1 * CELL_SIZE, length * CELL_SIZE), LINE_WIDTH)
-        pygame.draw.rect(self.image, allColors['white'],
+        pygame.draw.rect(self.image, AllColors['black'], (0, 0, 1 * CELL_SIZE, length * CELL_SIZE), LINE_WIDTH)
+        pygame.draw.rect(self.image, AllColors['white'],
                          (LINE_WIDTH, LINE_WIDTH, 1 * CELL_SIZE - 2 * LINE_WIDTH, length * CELL_SIZE - 2 * LINE_WIDTH),
                          LINE_WIDTH)
 

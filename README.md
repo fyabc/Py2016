@@ -12,3 +12,11 @@ Pygame 1.9.2a0
 ## Start
 
 Open the *Py2016* directory, and run *main.py*.
+You can also run *main.py* in other directories.
+
+Such as this:
+
+```     
+    cd Py2016
+    python main.py
+```

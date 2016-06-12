@@ -9,7 +9,7 @@ import pygame.font
 import pygame.locals
 
 # Local libraries.
-from config.gameConfig import RECORD_FILE_NAME, FONT_NAME, CELL_SIZE, GAME_SCREEN_SIZE
+from config.gameConfig import KEYMAP_DIR, RECORD_FILE_NAME, FONT_NAME, CELL_SIZE, GAME_SCREEN_SIZE
 
 
 def lineStripComment(line, commentStr='#'):
@@ -20,7 +20,7 @@ def lineStripComment(line, commentStr='#'):
 def loadKeyMap():
     keyMap = defaultdict(set)
 
-    keyMapFile = open('config/keymap.txt', 'r')
+    keyMapFile = open(KEYMAP_DIR, 'r')
 
     for line in keyMapFile:
         line = line.strip()

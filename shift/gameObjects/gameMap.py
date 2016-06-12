@@ -9,7 +9,7 @@ from functools import partial
 import pygame
 
 # Local modules.
-from config.gameConfig import CELL_SIZE, allColors, FPS_MAIN, GAME_SCREEN_SIZE
+from config.gameConfig import CELL_SIZE, AllColors, FPS_MAIN, GAME_SCREEN_SIZE
 from shift.utils.basicUtils import hitTestByDistance
 from shift.utils.timer import ShiftTimer
 
@@ -20,9 +20,9 @@ import GVar
 
 def getRealColor(logicColor):
     if logicColor is True:
-        return allColors['white']
+        return AllColors['white']
     else:
-        return allColors['black']
+        return AllColors['black']
 
 
 class GameMap:
@@ -220,7 +220,7 @@ class GameMap:
 
         for currAngle in range(0, angle, AnglePerStep):
             GVar.globalTimer.tick(FPS_MAIN)
-            self.surface.fill(allColors['white'])
+            self.surface.fill(AllColors['white'])
 
             rotateSurface = pygame.transform.rotate(origSurface, currAngle).convert_alpha()
             rotateRect = rotateSurface.get_rect()
