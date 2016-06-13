@@ -238,13 +238,13 @@ class StaticObject(ShiftSprite):
 
         if imageName == 'trap.png':
             if self.angle == 0:
-                self.rect.midbottom = (CELL_SIZE * location[0] + CELL_SIZE / 2, CELL_SIZE * (location[1] + 1))
+                self.rect.midbottom = (CELL_SIZE * location[0] + CELL_SIZE // 2, CELL_SIZE * (location[1] + 1))
             elif self.angle == 90:
-                self.rect.midright = (CELL_SIZE * (location[0] + 1), CELL_SIZE * location[1] + CELL_SIZE / 2)
+                self.rect.midright = (CELL_SIZE * (location[0] + 1), CELL_SIZE * location[1] + CELL_SIZE // 2)
             elif self.angle == 180:
-                self.rect.midtop = (CELL_SIZE * location[0] + CELL_SIZE / 2, CELL_SIZE * location[1])
+                self.rect.midtop = (CELL_SIZE * location[0] + CELL_SIZE // 2, CELL_SIZE * location[1])
             elif self.angle == 270:
-                self.rect.midleft = (CELL_SIZE * location[0], CELL_SIZE * location[1] + CELL_SIZE / 2)
+                self.rect.midleft = (CELL_SIZE * location[0], CELL_SIZE * location[1] + CELL_SIZE // 2)
         else:
             self.rect.center = getRealLocation(location)
 

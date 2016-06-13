@@ -16,7 +16,8 @@ You can also run *main.py* in other directories.
 
 Such as this:
 
-```     
+```bash
     cd Py2016
-    python main.py
+    python3 main.py
+    # or python main.py if your default python is python3.
 ```
