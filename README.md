@@ -7,6 +7,7 @@ This is a mini game **Shift**, written by **Python**, using *pygame* library.
 ## Requirements
 
 Python 3 (3.4 / 3.5)
+
 Pygame 1.9.2a0
 
 ## Start
