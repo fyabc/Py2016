@@ -83,7 +83,7 @@ def sign(x):
 
 
 def getRealLocation(location):
-    # [NOTE]: return the center location of this cell.
+    # [NOTE]: return the CENTER location of this cell.
     return CELL_SIZE * location[0] + CELL_SIZE / 2, \
            CELL_SIZE * location[1] + CELL_SIZE / 2
 

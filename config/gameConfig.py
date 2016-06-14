@@ -2,7 +2,7 @@
 __author__ = 'fyabc'
 
 # Standard libraries.
-from os.path import dirname
+import os
 
 # Dependent libraries.
 from pygame.color import THECOLORS as AllColors
@@ -26,13 +26,16 @@ assert GAME_SCREEN_SIZE[0] % CELL_SIZE == 0 and GAME_SCREEN_SIZE[1] % CELL_SIZE 
 
 BACKGROUND_COLOR = AllColors['white']
 
-ROOT_DIR = dirname(dirname(__file__))
+ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 
 LEVELS_DIR = ROOT_DIR + '/data/levels'
 IMAGES_DIR = ROOT_DIR + '/data/images'
 KEYMAP_DIR = ROOT_DIR + '/config/keymap.txt'
 
 RECORD_FILE_NAME = ROOT_DIR + '/data/record.txt'
+
+DEFAULT_LEVELS_NAME = 'basic.txt'
+LEVELS_FILE_NAMES = os.listdir(LEVELS_DIR)
 
 USE_SYSTEM_FONT = False
 

@@ -5,7 +5,7 @@ __author__ = 'fyabc'
 from collections import defaultdict
 
 # Local libraries.
-from config.gameConfig import LEVELS_DIR
+from config.gameConfig import LEVELS_DIR, DEFAULT_LEVELS_NAME
 
 
 class LevelData:
@@ -41,12 +41,23 @@ class LevelData:
             self.records[record[0]].append([int(record[i]) for i in range(1, len(record))])
 
 
+class Levels:
+    def __init__(self, name):
+        self.name = name
+        self.levels = []
+        self.currentLevelNum = 0
+        self.unlockedLevelNum = 0
+
+    def totalLevelNum(self):
+        return len(self.levels)
+
+
 def lineStripComment(line, commentStr='#'):
     loc = line.find(commentStr)
     return line[:None if loc == -1 else loc].strip()
 
 
-def loadLevels(levelsFileName='basic.txt', levelsFolderName=LEVELS_DIR):
+def loadLevels(levelsFileName=DEFAULT_LEVELS_NAME, levelsFolderName=LEVELS_DIR):
     levelsFile = open(levelsFolderName + '/' + levelsFileName, 'r')
 
     allLines = levelsFile.read().split('\n')

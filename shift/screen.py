@@ -8,7 +8,7 @@ import pygame
 import pygame.locals
 
 # Local modules.
-from config.gameConfig import FPS_MAIN, BACKGROUND_COLOR, AllColors
+from config.gameConfig import FPS_MAIN, BACKGROUND_COLOR, AllColors, DEFAULT_LEVELS_NAME, LEVELS_FILE_NAMES
 import GVar
 
 from shift.gameObjects.gameMap import GameMap
@@ -148,13 +148,13 @@ class StartGameScreen(MenuScreen):
         self.actions['help'] = lambda *args: self.game.allStates['helpScreen']
         self.actions['quit'] = lambda *args: self.game.allStates['esc']
         self.actions['editor'] = lambda *args: self.game.allStates['editorScreen']
-        self.actions['github'] = __openGitHub
 
         newGameButton = ShiftTextButton('New Game(N)', (0.25, 0.31))
         continueButton = ShiftTextButton('Continue(C)', (0.75, 0.31))
         editorButton = ShiftTextButton('Edit(E)', (0.25, 0.51))
         helpButton = ShiftTextButton('Help(H)', (0.75, 0.51))
         quitButton = ShiftTextButton('Quit(Q)', (0.25, 0.71))
+        selectLevelsButton = ShiftTextButton('Select Levels', (0.75, 0.71), font=getFont(35))
         githubButton = ShiftTextButton('Author: fyabc<www.github.com/fyabc>', (0.5, 0.9), font=getFont(18))
 
         # add buttons to group
@@ -163,7 +163,8 @@ class StartGameScreen(MenuScreen):
         self.addButtonAndAction(helpButton, self.actions['help'])
         self.addButtonAndAction(quitButton, self.actions['quit'])
         self.addButtonAndAction(editorButton, self.actions['editor'])
-        self.addButtonAndAction(githubButton, self.actions['github'])
+        self.addButtonAndAction(githubButton, __openGitHub)
+        self.addButtonAndAction(selectLevelsButton, lambda *args: self.game.allStates['selectLevelsScreen'])
 
 
 class HelpScreen(MenuScreen):
@@ -233,6 +234,28 @@ class MainMenuScreen(MenuScreen):
         return super(MainMenuScreen, self).run(*args)
 
 
+class SelectLevelsScreen(MenuScreen):
+    def __init__(self, game):
+        super(SelectLevelsScreen, self).__init__(game, GVar.mainWindow)
+
+        returnButton = ShiftTextButton('Return to main menu(Q)', (0.5, 0.85), font=getFont(25))
+
+        self.actions['quit'] = lambda *args: self.game.allStates['startGameScreen']
+
+        def __changeLevels(newLevelsName):
+            def __action(*args):
+                GVar.levelsName = newLevelsName
+                return self.game.allStates['startGameScreen']
+            return __action
+
+        self.addButtonAndAction(returnButton, self.actions['quit'])
+        for levelsName in LEVELS_FILE_NAMES:
+            self.addButtonAndAction(
+                ShiftTextButton(levelsName),
+                __changeLevels(levelsName)
+            )
+
+
 class MainGameScreen(MenuScreen):
     def __init__(self, game):
         super(MainGameScreen, self).__init__(game, GVar.mainWindow)
@@ -265,14 +288,8 @@ class MainGameScreen(MenuScreen):
                         return self.actions[keyName](*args)
                     else:
                         # parse game key actions.
-                        if keyName == 'left':
-                            command = GameMap.allCommands['left']
-                        elif keyName == 'right':
-                            command = GameMap.allCommands['right']
-                        elif keyName == 'jump':
-                            command = GameMap.allCommands['jump']
-                        elif keyName == 'shift':
-                            command = GameMap.allCommands['shift']
+                        if keyName in ('left', 'right', 'jump', 'shift'):
+                            command = GameMap.allCommands[keyName]
 
                 elif event.type == pygame.locals.KEYUP:
                     keyName = getKeyName(event.key, GVar.keyMap)

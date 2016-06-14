@@ -12,8 +12,17 @@ globalTimer = None
 globalFont = None
 keyMap = None
 
+
+class GameRecord:
+    def __init__(self, levelsName):
+        self.levelsName = levelsName
+        self.totalLevelNum = None
+        self.unlockedLevelNum = None
+        self.currentLevelNum = None
+
 totalLevelNum = None
 unlockedLevelNum = None
 currentLevelNum = None
 
+levelsName = None
 levelsData = None

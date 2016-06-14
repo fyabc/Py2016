@@ -33,6 +33,7 @@ class Game:
         'aboutScreen': 5,
         'pauseMenuScreen': 6,
         'editorScreen': 7,
+        'selectLevelsScreen': 8,
     }
 
     def __init__(self):
@@ -40,6 +41,7 @@ class Game:
         self.screens = {}
         self.prevState = None
         self.state = Game.allStates['startGameScreen']
+        self.args = []
 
     def registerScreen(self, stateName, screen):
         self.screens[Game.allStates[stateName]] = screen
@@ -51,7 +53,8 @@ class Game:
             elif self.state == Game.allStates['default']:
                 break
 
-            self.prevState, self.state = self.state, self.screens[self.state].run(self.prevState)
+            self.prevState, self.state, *self.args =\
+                self.state, self.screens[self.state].run(self.prevState, *self.args)
 
         quitGame()
 
@@ -64,6 +67,7 @@ def main():
     game.registerScreen('mainMenuScreen', MainMenuScreen(game))
     game.registerScreen('mainGame', MainGameScreen(game))
     game.registerScreen('editorScreen', EditorScreen(game))
+    game.registerScreen('selectLevelsScreen', SelectLevelsScreen(game))
 
     game.run()
 
@@ -72,19 +76,20 @@ def initGame():
     pygame.init()
     GVar.mainWindow = pygame.display.set_mode(SCREEN_SIZE)
     pygame.display.set_caption(GAME_NAME)
-
     GVar.globalTimer = pygame.time.Clock()
-
     GVar.globalFont = getFont()
 
     GVar.keyMap = loadKeyMap()
-
+    GVar.levelsName = DEFAULT_LEVELS_NAME
     GVar.totalLevelNum, GVar.levelsData = loadLevels()
-
     GVar.unlockedLevelNum = loadRecord()
 
     # This may be speed up the game or not?
-    pygame.event.set_blocked(pygame.locals.MOUSEMOTION)
+    pygame.event.set_allowed([
+        pygame.locals.KEYDOWN,
+        pygame.locals.MOUSEBUTTONDOWN,
+        pygame.locals.MOUSEBUTTONUP,
+    ])
 
 
 def quitGame():
