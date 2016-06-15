@@ -6,10 +6,12 @@ from collections import defaultdict
 
 # Local libraries.
 from config.gameConfig import LEVELS_DIR, DEFAULT_LEVELS_NAME
+from shift.utils.basicUtils import loadRecord
+import GVar
 
 
-class LevelData:
-    """the class to store level data from file and then be copied to GameMap.
+class MapData:
+    """the class to store map data of one level from file and then be copied to GameMap.
         I use this class because the pygame.surface.Surface cannot be copied.
 
         record types:
@@ -44,12 +46,10 @@ class LevelData:
 class Levels:
     def __init__(self, name):
         self.name = name
-        self.levels = []
-        self.currentLevelNum = 0
-        self.unlockedLevelNum = 0
-
-    def totalLevelNum(self):
-        return len(self.levels)
+        self.maps = []
+        self.totalLevelNum = None
+        self.currentLevelNum = None
+        self.unlockedLevelNum = loadRecord(name)
 
 
 def lineStripComment(line, commentStr='#'):
@@ -66,8 +66,7 @@ def loadLevels(levelsFileName=DEFAULT_LEVELS_NAME, levelsFolderName=LEVELS_DIR):
 
     allLines = [lineStripComment(line) for line in allLines if len(lineStripComment(line)) > 0]
 
-    levelNum = 0
-    levelMap = []
+    levels = Levels(GVar.levelsName)
 
     index = 0
 
@@ -78,20 +77,20 @@ def loadLevels(levelsFileName=DEFAULT_LEVELS_NAME, levelsFolderName=LEVELS_DIR):
     while index < len(allLines):
         index += 1  # parse 'begin'
 
-        levelMap.append(LevelData(mapSize))
+        levels.maps.append(MapData(mapSize))
 
         for i in range(mapSize):
             line = allLines[index].split()
-            levelMap[levelNum].getLine(line, i)
+            levels.maps[-1].getLine(line, i)
             index += 1
 
         while allLines[index] != 'end':
             record = allLines[index].split()
             index += 1
-            levelMap[levelNum].addRecord(record)
+            levels.maps[-1].addRecord(record)
 
         index += 1  # parse 'end'
 
-        levelNum += 1
+    levels.totalLevelNum = len(levels.maps)
 
-    return levelNum, levelMap
+    return levels

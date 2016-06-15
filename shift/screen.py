@@ -15,6 +15,7 @@ from shift.gameObjects.gameMap import GameMap
 from shift.gameObjects.shiftButton import ShiftTextButton, ShiftButtonPool
 from shift.gameObjects.menuText import MenuText
 from shift.utils.basicUtils import getKeyName, getFont
+from shift.utils.loadLevels import loadLevels
 
 
 class Screen:
@@ -133,7 +134,8 @@ class StartGameScreen(MenuScreen):
         # some special actions
         def __newGameAction(*args):
             # start a new game will clear your record!
-            GVar.unlockedLevelNum = 1
+            GVar.levelsData[GVar.levelsName].unlockedLevelNum = (
+                1 if GVar.levelsData[GVar.levelsName].totalLevelNum >= 1 else 0)
             return self.game.allStates['mainMenuScreen']
 
         def __openGitHub(*args):
@@ -210,7 +212,7 @@ class MainMenuScreen(MenuScreen):
                 (getWidth(i), getHeight(i)),
                 font=getFont(48),
             )
-            for i in range(1, GVar.totalLevelNum + 1)
+            for i in range(1, GVar.levelsData[GVar.levelsName].totalLevelNum + 1)
         ]
 
         self.returnButton = ShiftTextButton('Return to main menu(Q)', (0.5, 0.91), font=getFont(25))
@@ -219,14 +221,16 @@ class MainMenuScreen(MenuScreen):
         # clean all buttons before and then add buttons. The GVar.unlockedLevelNum may changed.
         self.buttons.empty()
 
+        levels = GVar.levelsData[GVar.levelsName]
+
         def __levelButtonsAction(levelNum):
             def __action(*args):
-                GVar.currentLevelNum = levelNum
+                levels.currentLevelNum = levelNum
                 return self.game.allStates['mainGame']
 
             return __action
 
-        for i in range(GVar.unlockedLevelNum):
+        for i in range(levels.unlockedLevelNum):
             self.addButtonAndAction(self.levelButtons[i], __levelButtonsAction(i + 1))
 
         self.addButtonAndAction(self.returnButton, self.actions['quit'])
@@ -245,13 +249,17 @@ class SelectLevelsScreen(MenuScreen):
         def __changeLevels(newLevelsName):
             def __action(*args):
                 GVar.levelsName = newLevelsName
+                if levelsName not in GVar.levelsData:
+                    GVar.levelsData[levelsName] = loadLevels(levelsName)
                 return self.game.allStates['startGameScreen']
             return __action
 
         self.addButtonAndAction(returnButton, self.actions['quit'])
-        for levelsName in LEVELS_FILE_NAMES:
+
+        l = len(LEVELS_FILE_NAMES)
+        for i, levelsName in enumerate(LEVELS_FILE_NAMES):
             self.addButtonAndAction(
-                ShiftTextButton(levelsName),
+                ShiftTextButton(levelsName, position=(0.5, i / l)),
                 __changeLevels(levelsName)
             )
 
@@ -268,7 +276,11 @@ class MainGameScreen(MenuScreen):
     def run(self, *args):
         self.surface.fill(AllColors['white'])
 
-        gameMap = GameMap(GVar.levelsData[GVar.currentLevelNum - 1], self.surface)
+        levels = GVar.levelsData.get(GVar.levelsName)
+        if levels is None:
+            levels = loadLevels(GVar.levelsName)
+            GVar.levelsData[GVar.levelsName] = levels
+        gameMap = GameMap(levels.maps[levels.currentLevelNum - 1], self.surface)
 
         gameMap.draw(gameMap.surface)
         pygame.display.update()
@@ -306,13 +318,13 @@ class MainGameScreen(MenuScreen):
             if result == 1:     # Win
                 print('I win!!!')
                 pygame.time.delay(500)
-                if GVar.currentLevelNum < GVar.unlockedLevelNum:
-                    GVar.currentLevelNum += 1
+                if levels.currentLevelNum < levels.unlockedLevelNum:
+                    levels.currentLevelNum += 1
                     return self.actions['nextGame'](*args)
                 else:
-                    if GVar.unlockedLevelNum < GVar.totalLevelNum:
-                        GVar.unlockedLevelNum += 1
-                        GVar.currentLevelNum += 1
+                    if levels.unlockedLevelNum < levels.totalLevelNum:
+                        levels.unlockedLevelNum += 1
+                        levels.currentLevelNum += 1
                         return self.actions['nextGame'](*args)
                     else:
                         print('I have completed all levels!!!')

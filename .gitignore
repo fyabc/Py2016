@@ -65,4 +65,4 @@ target/
 .idea
 
 # Game Data Files
-data/record.txt
+data/records/

@@ -32,7 +32,7 @@ LEVELS_DIR = ROOT_DIR + '/data/levels'
 IMAGES_DIR = ROOT_DIR + '/data/images'
 KEYMAP_DIR = ROOT_DIR + '/config/keymap.txt'
 
-RECORD_FILE_NAME = ROOT_DIR + '/data/record.txt'
+RECORDS_DIR = ROOT_DIR + '/data/records'
 
 DEFAULT_LEVELS_NAME = 'basic.txt'
 LEVELS_FILE_NAMES = os.listdir(LEVELS_DIR)

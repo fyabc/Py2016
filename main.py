@@ -81,7 +81,7 @@ def initGame():
 
     GVar.keyMap = loadKeyMap()
     GVar.levelsName = DEFAULT_LEVELS_NAME
-    GVar.totalLevelNum, GVar.levelsData = loadLevels()
+    GVar.levelsData[DEFAULT_LEVELS_NAME] = loadLevels()
     GVar.unlockedLevelNum = loadRecord()
 
     # This may be speed up the game or not?
@@ -93,7 +93,12 @@ def initGame():
 
 
 def quitGame():
-    saveRecord(GVar.unlockedLevelNum)
+    # Save all levels records.
+    for levelsName in LEVELS_FILE_NAMES:
+        levels = GVar.levelsData.get(levelsName)
+        if levels is not None:
+            saveRecord(levels.unlockedLevelNum, levelsName)
+
     pygame.quit()
     print('The game is quited!')
     sys.exit()

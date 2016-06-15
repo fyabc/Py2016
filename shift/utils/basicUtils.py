@@ -9,7 +9,7 @@ import pygame.font
 import pygame.locals
 
 # Local libraries.
-from config.gameConfig import KEYMAP_DIR, RECORD_FILE_NAME, FONT_NAME, CELL_SIZE, GAME_SCREEN_SIZE
+from config.gameConfig import KEYMAP_DIR, RECORDS_DIR, FONT_NAME, CELL_SIZE, GAME_SCREEN_SIZE, DEFAULT_LEVELS_NAME
 
 
 def lineStripComment(line, commentStr='#'):
@@ -37,9 +37,9 @@ def loadKeyMap():
     return keyMap
 
 
-def loadRecord():
+def loadRecord(levelsName=DEFAULT_LEVELS_NAME):
     try:
-        record = open(RECORD_FILE_NAME, 'r')
+        record = open(RECORDS_DIR + '/' + levelsName, 'r')
         result = int(record.read())
         record.close()
         return result
@@ -49,8 +49,8 @@ def loadRecord():
         return 1
 
 
-def saveRecord(unlockedLevelNum):
-    record = open(RECORD_FILE_NAME, 'w')
+def saveRecord(unlockedLevelNum, levelsName=DEFAULT_LEVELS_NAME):
+    record = open(RECORDS_DIR + '/' + levelsName, 'w')
     record.write('%d\n' % unlockedLevelNum)
     record.close()
 
