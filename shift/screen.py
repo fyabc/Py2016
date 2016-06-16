@@ -256,10 +256,10 @@ class SelectLevelsScreen(MenuScreen):
 
         self.addButtonAndAction(returnButton, self.actions['quit'])
 
-        l = len(LEVELS_FILE_NAMES)
         for i, levelsName in enumerate(LEVELS_FILE_NAMES):
+            row, col = i // 2, i % 2
             self.addButtonAndAction(
-                ShiftTextButton(levelsName, position=(0.5, i / l)),
+                ShiftTextButton(levelsName, position=(0.25 + col * 0.5, 0.2 + row * 0.1), font=getFont(25)),
                 __changeLevels(levelsName)
             )
 
