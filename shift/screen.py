@@ -90,13 +90,13 @@ class MenuScreen(Screen):
         pygame.display.update()
 
         while True:
-            GVar.globalTimer.tick(FPS_MAIN)
+            GVar.GlobalTimer.tick(FPS_MAIN)
             for event in pygame.event.get():
                 if event.type == pygame.locals.QUIT:
                     return self.actions['esc'](*args)
 
                 elif event.type == pygame.locals.KEYDOWN:
-                    keyName = getKeyName(event.key, GVar.keyMap)
+                    keyName = getKeyName(event.key, GVar.KeyMap)
                     if keyName in self.actions:
                         return self.actions[keyName](*args)
 
@@ -124,7 +124,7 @@ class MenuScreen(Screen):
 
 class StartGameScreen(MenuScreen):
     def __init__(self, game):
-        super(StartGameScreen, self).__init__(game, GVar.mainWindow)
+        super(StartGameScreen, self).__init__(game, GVar.MainWindow)
 
         self.addInactiveThings(
             MenuText('Sh', (0.43, 0.14), 57),
@@ -134,8 +134,8 @@ class StartGameScreen(MenuScreen):
         # some special actions
         def __newGameAction(*args):
             # start a new game will clear your record!
-            GVar.levelsData[GVar.levelsName].unlockedLevelNum = (
-                1 if GVar.levelsData[GVar.levelsName].totalLevelNum >= 1 else 0)
+            GVar.LevelsData[GVar.LevelsName].unlockedLevelNum = (
+                1 if GVar.LevelsData[GVar.LevelsName].totalLevelNum >= 1 else 0)
             return self.game.allStates['mainMenuScreen']
 
         def __openGitHub(*args):
@@ -155,8 +155,8 @@ class StartGameScreen(MenuScreen):
         continueButton = ShiftTextButton('Continue(C)', (0.75, 0.31))
         editorButton = ShiftTextButton('Edit(E)', (0.25, 0.51))
         helpButton = ShiftTextButton('Help(H)', (0.75, 0.51))
-        quitButton = ShiftTextButton('Quit(Q)', (0.25, 0.71))
-        selectLevelsButton = ShiftTextButton('Select Levels', (0.75, 0.71), font=getFont(35))
+        selectLevelsButton = ShiftTextButton('Select Levels', (0.25, 0.71), font=getFont(35))
+        quitButton = ShiftTextButton('Quit(Q)', (0.75, 0.71))
         githubButton = ShiftTextButton('Author: fyabc<www.github.com/fyabc>', (0.5, 0.9), font=getFont(18))
 
         # add buttons to group
@@ -171,7 +171,7 @@ class StartGameScreen(MenuScreen):
 
 class HelpScreen(MenuScreen):
     def __init__(self, game):
-        super(HelpScreen, self).__init__(game, GVar.mainWindow)
+        super(HelpScreen, self).__init__(game, GVar.MainWindow)
 
         returnButton = ShiftTextButton('Return to main menu(Q)', (0.5, 0.85), font=getFont(25))
 
@@ -190,7 +190,7 @@ class HelpScreen(MenuScreen):
 
 class MainMenuScreen(MenuScreen):
     def __init__(self, game):
-        super(MainMenuScreen, self).__init__(game, GVar.mainWindow)
+        super(MainMenuScreen, self).__init__(game, GVar.MainWindow)
 
         self.actions['quit'] = lambda *args: self.game.allStates['startGameScreen']
         self.actions['help'] = lambda *args: self.game.allStates['helpScreen']
@@ -212,7 +212,7 @@ class MainMenuScreen(MenuScreen):
                 (getWidth(i), getHeight(i)),
                 font=getFont(48),
             )
-            for i in range(1, GVar.levelsData[GVar.levelsName].totalLevelNum + 1)
+            for i in range(1, GVar.LevelsData[GVar.LevelsName].totalLevelNum + 1)
         ]
 
         self.returnButton = ShiftTextButton('Return to main menu(Q)', (0.5, 0.91), font=getFont(25))
@@ -221,7 +221,7 @@ class MainMenuScreen(MenuScreen):
         # clean all buttons before and then add buttons. The GVar.unlockedLevelNum may changed.
         self.buttons.empty()
 
-        levels = GVar.levelsData[GVar.levelsName]
+        levels = GVar.LevelsData[GVar.LevelsName]
 
         def __levelButtonsAction(levelNum):
             def __action(*args):
@@ -240,7 +240,7 @@ class MainMenuScreen(MenuScreen):
 
 class SelectLevelsScreen(MenuScreen):
     def __init__(self, game):
-        super(SelectLevelsScreen, self).__init__(game, GVar.mainWindow)
+        super(SelectLevelsScreen, self).__init__(game, GVar.MainWindow)
 
         returnButton = ShiftTextButton('Return to main menu(Q)', (0.5, 0.85), font=getFont(25))
 
@@ -248,9 +248,9 @@ class SelectLevelsScreen(MenuScreen):
 
         def __changeLevels(newLevelsName):
             def __action(*args):
-                GVar.levelsName = newLevelsName
-                if levelsName not in GVar.levelsData:
-                    GVar.levelsData[levelsName] = loadLevels(levelsName)
+                GVar.LevelsName = newLevelsName
+                if levelsName not in GVar.LevelsData:
+                    GVar.LevelsData[levelsName] = loadLevels(levelsName)
                 return self.game.allStates['startGameScreen']
             return __action
 
@@ -266,7 +266,7 @@ class SelectLevelsScreen(MenuScreen):
 
 class MainGameScreen(MenuScreen):
     def __init__(self, game):
-        super(MainGameScreen, self).__init__(game, GVar.mainWindow)
+        super(MainGameScreen, self).__init__(game, GVar.MainWindow)
 
         self.actions['quit'] = lambda *args: self.game.allStates['mainMenuScreen']
         self.actions['nextGame'] = lambda *args: self.game.allStates['mainGame']
@@ -276,17 +276,17 @@ class MainGameScreen(MenuScreen):
     def run(self, *args):
         self.surface.fill(AllColors['white'])
 
-        levels = GVar.levelsData.get(GVar.levelsName)
+        levels = GVar.LevelsData.get(GVar.LevelsName)
         if levels is None:
-            levels = loadLevels(GVar.levelsName)
-            GVar.levelsData[GVar.levelsName] = levels
+            levels = loadLevels(GVar.LevelsName)
+            GVar.LevelsData[GVar.LevelsName] = levels
         gameMap = GameMap(levels.maps[levels.currentLevelNum - 1], self.surface)
 
         gameMap.draw(gameMap.surface)
         pygame.display.update()
 
         while True:
-            GVar.globalTimer.tick(FPS_MAIN)
+            GVar.GlobalTimer.tick(FPS_MAIN)
             command = GameMap.allCommands['noOp']
 
             for event in pygame.event.get():
@@ -294,7 +294,7 @@ class MainGameScreen(MenuScreen):
                     return self.actions['esc'](*args)
 
                 elif event.type == pygame.locals.KEYDOWN:
-                    keyName = getKeyName(event.key, GVar.keyMap)
+                    keyName = getKeyName(event.key, GVar.KeyMap)
                     if keyName in self.actions:
                         # parse common key actions.
                         return self.actions[keyName](*args)
@@ -304,7 +304,7 @@ class MainGameScreen(MenuScreen):
                             command = GameMap.allCommands[keyName]
 
                 elif event.type == pygame.locals.KEYUP:
-                    keyName = getKeyName(event.key, GVar.keyMap)
+                    keyName = getKeyName(event.key, GVar.KeyMap)
                     if keyName == 'left':
                         command = GameMap.allCommands['leftStop']
                     elif keyName == 'right':

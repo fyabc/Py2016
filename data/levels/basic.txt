@@ -1,5 +1,7 @@
 # The index of map starts with 0
 
+# Lines or part of lines start with '#' are comments.
+
 # 0 is black, 1 is white.
 
 # The common size of game map is 12.

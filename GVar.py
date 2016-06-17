@@ -7,10 +7,10 @@ __author__ = 'fyabc'
 '''
 
 # Some global variables.
-mainWindow = None
-globalTimer = None
-globalFont = None
-keyMap = None
+MainWindow = None
+GlobalTimer = None
+GlobalFont = None
+KeyMap = None
 
-levelsName = None
-levelsData = {}
+LevelsName = None
+LevelsData = {}

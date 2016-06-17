@@ -16,11 +16,10 @@ SCREEN_SIZE = (SCREEN_WIDTH, SCREEN_HEIGHT)
 GAME_SCREEN_WIDTH = 600
 GAME_SCREEN_HEIGHT = 600
 GAME_SCREEN_SIZE = (GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT)
+CELL_SIZE = 50  # The size of a cell.
 
 FPS_START = 50  # The fps of start screen.
 FPS_MAIN = 60   # The fps of main game.
-
-CELL_SIZE = 50  # The size of a cell.
 
 assert GAME_SCREEN_SIZE[0] % CELL_SIZE == 0 and GAME_SCREEN_SIZE[1] % CELL_SIZE == 0
 
@@ -54,3 +53,5 @@ else:
 
 # Game Show Configs.
 MAP_ROTATE_SPEED = 3
+
+DEFAULT_FONT_SIZE = 40

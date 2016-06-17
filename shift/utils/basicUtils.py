@@ -9,7 +9,8 @@ import pygame.font
 import pygame.locals
 
 # Local libraries.
-from config.gameConfig import KEYMAP_DIR, RECORDS_DIR, FONT_NAME, CELL_SIZE, GAME_SCREEN_SIZE, DEFAULT_LEVELS_NAME
+from config.gameConfig import KEYMAP_DIR, RECORDS_DIR, FONT_NAME, CELL_SIZE, GAME_SCREEN_SIZE,\
+    DEFAULT_LEVELS_NAME, DEFAULT_FONT_SIZE
 
 
 def lineStripComment(line, commentStr='#'):
@@ -17,10 +18,10 @@ def lineStripComment(line, commentStr='#'):
     return line[:None if loc == -1 else loc].strip()
 
 
-def loadKeyMap():
+def loadKeyMap(keyMapFile=KEYMAP_DIR):
     keyMap = defaultdict(set)
 
-    keyMapFile = open(KEYMAP_DIR, 'r')
+    keyMapFile = open(keyMapFile, 'r')
 
     for line in keyMapFile:
         line = line.strip()
@@ -62,7 +63,7 @@ def invertColor(color):
         return 255 - color[0], 255 - color[1], 255 - color[2]
 
 
-def getFont(fontSize=40, fontName=FONT_NAME):
+def getFont(fontSize=DEFAULT_FONT_SIZE, fontName=FONT_NAME):
     return pygame.font.Font(fontName, fontSize)
 
 

@@ -66,7 +66,7 @@ def loadLevels(levelsFileName=DEFAULT_LEVELS_NAME, levelsFolderName=LEVELS_DIR):
 
     allLines = [lineStripComment(line) for line in allLines if len(lineStripComment(line)) > 0]
 
-    levels = Levels(GVar.levelsName)
+    levels = Levels(GVar.LevelsName)
 
     index = 0
 

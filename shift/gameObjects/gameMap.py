@@ -219,7 +219,7 @@ class GameMap:
             self.draw(origSurface)
 
         for currAngle in range(0, angle, AnglePerStep):
-            GVar.globalTimer.tick(FPS_MAIN)
+            GVar.GlobalTimer.tick(FPS_MAIN)
             self.surface.fill(AllColors['white'])
 
             rotateSurface = pygame.transform.rotate(origSurface, currAngle).convert_alpha()

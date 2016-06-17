@@ -331,7 +331,7 @@ class Mosaic(StaticObject):
         self.kill()
 
         for currentSize in range(self.rect.height, 0, -MAP_ROTATE_SPEED - 2):
-            GVar.globalTimer.tick(FPS_MAIN)
+            GVar.GlobalTimer.tick(FPS_MAIN)
             self.gameMap.draw(self.gameMap.surface)
 
             scaledImage = pygame.transform.scale(self.image, (currentSize, currentSize))
@@ -443,7 +443,7 @@ class Block(ShiftSprite):
         self.visible = False
 
         for currAngle in range(0, 180, MAP_ROTATE_SPEED):
-            GVar.globalTimer.tick(FPS_MAIN)
+            GVar.GlobalTimer.tick(FPS_MAIN)
             self.gameMap.draw(self.gameMap.surface)
 
             rotatedImage = pygame.transform.rotate(self.image, currAngle).convert_alpha()

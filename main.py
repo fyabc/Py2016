@@ -74,14 +74,14 @@ def main():
 
 def initGame():
     pygame.init()
-    GVar.mainWindow = pygame.display.set_mode(SCREEN_SIZE)
+    GVar.MainWindow = pygame.display.set_mode(SCREEN_SIZE)
     pygame.display.set_caption(GAME_NAME)
-    GVar.globalTimer = pygame.time.Clock()
-    GVar.globalFont = getFont()
+    GVar.GlobalTimer = pygame.time.Clock()
+    GVar.GlobalFont = getFont()
 
-    GVar.keyMap = loadKeyMap()
-    GVar.levelsName = DEFAULT_LEVELS_NAME
-    GVar.levelsData[DEFAULT_LEVELS_NAME] = loadLevels()
+    GVar.KeyMap = loadKeyMap()
+    GVar.LevelsName = DEFAULT_LEVELS_NAME
+    GVar.LevelsData[DEFAULT_LEVELS_NAME] = loadLevels()
     GVar.unlockedLevelNum = loadRecord()
 
     # This may be speed up the game or not?
@@ -95,7 +95,7 @@ def initGame():
 def quitGame():
     # Save all levels records.
     for levelsName in LEVELS_FILE_NAMES:
-        levels = GVar.levelsData.get(levelsName)
+        levels = GVar.LevelsData.get(levelsName)
         if levels is not None:
             saveRecord(levels.unlockedLevelNum, levelsName)
 

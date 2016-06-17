@@ -17,7 +17,7 @@ import GVar
 
 class EditorScreen(MenuScreen):
     def __init__(self, game):
-        super().__init__(game, GVar.mainWindow)
+        super().__init__(game, GVar.MainWindow)
 
         self.addInactiveThings(
             MenuText('Coming soon...', (0.5, 0.3), 40)
