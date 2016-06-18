@@ -39,7 +39,7 @@ class GameMap:
         self.blocks :
         self.lamps : a list of Sprites of lamps and mosaics
         self.mosaics :
-        self.texts :
+        self.texts : a list of Sprites of texts
     """
 
     allCommands = {
@@ -54,7 +54,6 @@ class GameMap:
 
     def __init__(self, levelData, surface):
         self.surface = surface
-        self.direction = 0
         self.rowNum = levelData.rowNum
 
         self.matrix = deepcopy(levelData.matrix)
