@@ -1,3 +1,5 @@
+
+
 # Py2016
 
 The project of Python 2016 Course.
@@ -45,3 +47,7 @@ More details can be seen in `config/keymap.txt`.
 If you want to add your own levels, you can add a map file in `data/levels/` directory.
 The file will be added into game automatically. You can select it in **Select Levels**.
 The format of map file can be seen in `basic.txt`.
+
+## More
+
+I am moving this project to another bigger project [MiniGames](https://github.com/fyabc/MiniGames), but it may take some times.
